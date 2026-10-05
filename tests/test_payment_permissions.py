@@ -2,7 +2,9 @@ from unittest.mock import patch
 
 from flask import Flask, jsonify
 from app import app as flask_app, staff_required
+
 flask_app.config["TESTING"] = True
+flask_app.config["SECRET_KEY"] = "test-only-secret"
 
 
 def create_test_app():
