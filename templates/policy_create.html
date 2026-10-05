@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Insurance Policy</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef4f8;
+            color: #183b56;
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .policy-card {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #176b87;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea,
+        select {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd8e0;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 24px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: #176b87;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #10536b;
+        }
+
+        .error-message {
+            padding: 12px;
+            background-color: #fdecec;
+            color: #a12626;
+            border-radius: 6px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #176b87;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="policy-card">
+        <h1>Create Insurance Policy</h1>
+
+        <p>Enter the details for your registered vehicle.</p>
+
+        {% if error_message %}
+            <div class="error-message" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+            
+<label for="vehicle_id">Select Your Vehicle</label>
+<select id="vehicle_id" name="vehicle_id" required>
+    <option value="">-- Select a vehicle --</option>
+
+    {% for vehicle in vehicles %}
+        <option value="{{ vehicle.vehicle_id }}">
+            {{ vehicle.registration_number }} -
+            {{ vehicle.make }} {{ vehicle.model }}
+        </option>
+    {% endfor %}
+</select>
+
+            <label for="coverage_details">Coverage Details</label>
+            <textarea
+                id="coverage_details"
+                name="coverage_details"
+                required
+                maxlength="2000"
+                placeholder="Describe the sample coverage"
+            ></textarea>
+
+            <label for="premium_amount">Premium Amount (₹)</label>
+            <input
+                type="number"
+                id="premium_amount"
+                name="premium_amount"
+                min="0"
+                max="999999999.99"
+                step="0.01"
+                required
+            >
+
+            <label for="start_date">Policy Start Date</label>
+            <input
+                type="date"
+                id="start_date"
+                name="start_date"
+                required
+            >
+
+            <label for="expiry_date">Policy Expiry Date</label>
+            <input
+                type="date"
+                id="expiry_date"
+                name="expiry_date"
+                required
+            >
+
+            <button type="submit">Submit Policy</button>
+        </form>
+
+        <a class="back-link" href="{{ url_for('customer_dashboard') }}">
+            Back to Dashboard
+        </a>
+    </div>
+</body>
+</html>

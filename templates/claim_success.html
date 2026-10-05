@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Submitted Successfully</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: #eef4f8;
+            color: #263746;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #246b55;
+        }
+
+        .claim-number {
+            padding: 15px;
+            background: #edf8f2;
+            border-radius: 8px;
+            font-size: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .detail {
+            margin: 14px 0;
+            line-height: 1.5;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: #e5efff;
+            color: #245b83;
+            font-weight: bold;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            margin-right: 10px;
+            padding: 11px 16px;
+            border-radius: 6px;
+            background: #246b9b;
+            color: white;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background: #194f75;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Claim Submitted Successfully!</h1>
+
+        <p>Your claim has been registered in the insurance system.</p>
+
+        <div class="claim-number">
+            <strong>Claim Number:</strong>
+            {{ claim.claim_number }}
+        </div>
+
+        <p class="detail">
+            <strong>Claimed Amount:</strong>
+            ₹{{ "%.2f"|format(claim.claimed_amount) }}
+        </p>
+
+        <p class="detail">
+            <strong>Incident Date:</strong>
+            {{ claim.incident_date }}
+        </p>
+
+        <p class="detail">
+            <strong>Current Status:</strong>
+            <span class="status">{{ claim.status }}</span>
+        </p>
+
+        <p>
+            Keep your claim number for future reference.
+            Your claim is submitted, but it has not yet been approved.
+        </p>
+
+        <a href="{{ url_for('customer_dashboard') }}">Back to Dashboard</a>
+        <a href="{{ url_for('claim_registration_page') }}">Register Another Claim</a>
+    </main>
+</body>
+</html>

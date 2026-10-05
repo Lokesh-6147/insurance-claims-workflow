@@ -1,0 +1,46 @@
+services:
+  insurance-app:
+    build:
+      context: .
+    image: insurance-claims-workflow
+    container_name: insurance-claims-compose
+    ports:
+      - "5001:5000"
+    env_file:
+      - .env.docker
+    environment:
+      DB_PASSWORD: "${DB_PASSWORD:?Set DB_PASSWORD in your PowerShell session}"
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_QUEUE: claim_events
+    depends_on:
+      - rabbitmq
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: insurance-rabbitmq-compose
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: unless-stopped
+
+  event-consumer:
+    build:
+      context: .
+    image: insurance-claims-workflow
+    container_name: insurance-event-consumer
+    env_file:
+      - .env.docker
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_QUEUE: claim_events
+    depends_on:
+      - rabbitmq
+    command: python event_consumer.py
+    restart: unless-stopped

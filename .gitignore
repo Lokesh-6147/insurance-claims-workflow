@@ -1,0 +1,24 @@
+
+# Python virtual environment
+venv/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Allow an example configuration template
+!.env.example
+
+# Test and coverage outputs
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor and operating system files
+.vscode/
+.DS_Store
+private_uploads/

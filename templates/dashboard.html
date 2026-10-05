@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard | Insurance Claims</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef4f8;
+            margin: 0;
+            min-height: 100vh;
+            color: #183b56;
+        }
+
+        header {
+            background-color: #176b87;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .welcome-card h2 {
+            margin-top: 0;
+        }
+
+        .account-details {
+            background-color: #f5f8fa;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+
+        .account-details p {
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .logout-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 22px;
+            background-color: #176b87;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .logout-button:hover {
+            background-color: #10536b;
+        }
+        
+        .dashboard-action {
+            background-color: #ffffff;
+            padding: 25px;
+            margin-top: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .dashboard-action h3 {
+            margin-top: 0;
+            color: #176b87;
+        }
+
+        .dashboard-action a {
+            display: inline-block;
+            margin: 10px 0 20px;
+            padding: 10px 18px;
+            background-color: #176b87;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .dashboard-action a:hover {
+            background-color: #10536b;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .dashboard-action table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: white;
+        }
+
+        .dashboard-action th,
+        .dashboard-action td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dce6ed;
+        }
+
+        .dashboard-action th {
+            background-color: #e4f1f6;
+            color: #183b56;
+        }
+
+        .dashboard-action tbody tr:hover {
+            background-color: #f5f8fa;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Insurance Claims Processing System</h1>
+    </header>
+
+    <main>
+        <section class="welcome-card">
+            <h2>Welcome, {{ customer_name }}!</h2>
+
+            <p>
+                You have successfully logged in to your
+                insurance customer account.
+            </p>
+
+            <p class="status">Account session active</p>
+
+            <div class="account-details">
+                <h3>Your Account Details</h3>
+
+                <p>
+                    <strong>Name:</strong>
+                    {{ customer_name }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ customer_email }}
+                </p>
+            </div>
+            
+<div class="dashboard-action">
+    <h3>My Vehicles</h3>
+
+    <p>View your registered vehicles below.</p>
+
+    <a href="{{ url_for('vehicle_registration_page') }}">
+        Register a Vehicle
+    </a>
+
+    {% if vehicles %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Registration Number</th>
+                        <th>Make</th>
+                        <th>Model</th>
+                        <th>Manufacturing Year</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for vehicle in vehicles %}
+                        <tr>
+                            <td>{{ vehicle.registration_number }}</td>
+                            <td>{{ vehicle.make }}</td>
+                            <td>{{ vehicle.model }}</td>
+                            <td>
+                                {{ vehicle.manufacturing_year or "Not provided" }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>You have not registered any vehicles yet.</p>
+    {% endif %}
+</div>
+
+<div class="dashboard-action">
+    <h3>My Policies</h3>
+    <p>View your insurance policies and their current status.</p>
+
+    <a href="{{ url_for('policy_creation_page') }}">Create a Policy</a>
+
+    {% if policies %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Policy Number</th>
+                    <th>Vehicle</th>
+                    <th>Coverage Details</th>
+                    <th>Premium (₹)</th>
+                    <th>Start Date</th>
+                    <th>Expiry Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for policy in policies %}
+                <tr>
+                    <td>{{ policy.policy_number }}</td>
+                    <td>
+                        {{ policy.registration_number }} -
+                        {{ policy.make }} {{ policy.model }}
+                    </td>
+                    <td>{{ policy.coverage_details }}</td>
+                    <td>{{ "%.2f"|format(policy.premium_amount) }}</td>
+                    <td>{{ policy.start_date }}</td>
+                    <td>{{ policy.expiry_date }}</td>
+                    <td>{{ policy.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p>You have not created any insurance policies yet.</p>
+    {% endif %}
+</div>
+            
+<div class="dashboard-action">
+    <h2>My Claims</h2>
+
+    <p>
+        View your submitted insurance claims and their current status.
+    </p>
+
+    <p>
+        <a href="{{ url_for('claim_registration_page') }}">
+            Register a New Claim
+        </a>
+    </p>
+
+    {% if claims %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Claim Number</th>
+                    <th>Policy Number</th>
+                    <th>Incident Date</th>
+                    <th>Claimed Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for claim in claims %}
+                <tr>
+                    <td>{{ claim.claim_number }}</td>
+                    <td>{{ claim.policy_number }}</td>
+                    <td>{{ claim.incident_date }}</td>
+                    <td>₹{{ "%.2f"|format(claim.claimed_amount) }}</td>
+                    <td>{{ claim.status }}</td>
+                    <td>
+    <a href="{{ url_for('claim_details_page', claim_id=claim.claim_id) }}">
+        View Details
+    </a>
+</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>You have not registered any claims yet.</p>
+    {% endif %}
+</div>
+
+            <a class="logout-button" href="/logout">Logout</a>
+        </section>
+    </main>
+</body>
+</html>
