@@ -2,11 +2,9 @@ name: Insurance Claims CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   test:
@@ -27,10 +25,26 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run tests
-        run: |
-          pytest -q
+        run: pytest -q
 
       - name: Build Docker image
-        run: |
-          docker build -t insurance-claims-workflow .
-          
+        run: docker build -t insurance-claims-workflow .
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.AWS_DEPLOY_KEY }}
+          script: |
+            cd ~/insurance-claims-workflow
+            git pull origin main
+            docker compose build
+            docker compose up -d
+            docker image prune -f
