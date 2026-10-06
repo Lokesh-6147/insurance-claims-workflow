@@ -45,6 +45,6 @@ jobs:
           script: |
             cd ~/insurance-claims-workflow
             git pull origin main
-            docker compose build
-            docker compose up -d
+            docker compose --env-file .env.aws build
+            docker compose --env-file .env.aws up -d
             docker image prune -f
