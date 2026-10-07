@@ -787,7 +787,7 @@ def logout_page():
 
 @app.route("/")
 def home():
-    return "Insurance Claims Processing Workflow API is running successfully!"
+        return render_template("home.html")
 
 
 @app.route("/health/db")
