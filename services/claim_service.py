@@ -5,7 +5,11 @@ from decimal import Decimal, InvalidOperation
 
 from db import get_db_connection
 from services.rabbitmq_service import publish_claim_event
-
+from services.rules_service import (
+    evaluate_claim_rules,
+    save_rule_evaluations,
+    save_fraud_flags,
+)
 
 def register_claim(
     customer_id,
@@ -82,7 +86,7 @@ def register_claim(
 
             policy = connection.execute(
                 """
-                SELECT policy_id
+                SELECT policy_id, start_date
                 FROM policies
                 WHERE policy_id = %s
                   AND customer_id = %s
@@ -137,7 +141,29 @@ def register_claim(
                 ),
             ).fetchone()
 
-            # 8. Record the initial status in the history table.
+            # 8. Evaluate configurable claim rules.
+            rule_evaluation = evaluate_claim_rules(
+                customer_id=customer_id,
+                claimed_amount=claimed_amount,
+                policy_start_date=policy[1],
+                incident_date=incident_date,
+            )
+
+            # Save rule evaluation results in the same transaction.
+            save_rule_evaluations(
+                connection,
+                claim[0],
+                rule_evaluation,
+            )
+
+            # Save detected fraud flags in the same transaction.
+            save_fraud_flags(
+                connection,
+                claim[0],
+                rule_evaluation,
+            )
+
+            # 9. Record the initial status in the history table.
             connection.execute(
                 """
                 INSERT INTO claim_status_history (

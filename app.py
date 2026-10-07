@@ -44,6 +44,7 @@ from services.claim_service import (
     get_claim_assessments,
     record_claim_decision,
 )
+from services.rules_service import get_claim_fraud_flags
 
 from db import get_db_connection
 from services.settlement_service import (
@@ -239,15 +240,17 @@ def staff_claim_details_page(claim_id):
 
         documents = get_staff_claim_documents(claim_id)
         assessments = get_claim_assessments(claim_id)
+        fraud_flags = get_claim_fraud_flags(claim_id)
 
         return render_template(
-            "staff_claim_details.html",
-            claim=claim,
-            documents=documents,
-            assessments=assessments,
-            staff_name=session.get("staff_name", "Staff Member"),
-            staff_roles=session.get("staff_roles", []),
-        )
+    "staff_claim_details.html",
+    claim=claim,
+    documents=documents,
+    assessments=assessments,
+    fraud_flags=fraud_flags,
+    staff_name=session.get("staff_name", "Staff Member"),
+    staff_roles=session.get("staff_roles", []),
+)
 
     except Exception:
         app.logger.exception("Failed to load staff claim details")
