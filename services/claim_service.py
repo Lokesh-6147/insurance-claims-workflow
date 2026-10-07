@@ -1,10 +1,11 @@
 
+import json
 import secrets
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
 from db import get_db_connection
-from services.rabbitmq_service import publish_claim_event
+
 from services.rules_service import (
     evaluate_claim_rules,
     save_rule_evaluations,
@@ -183,11 +184,41 @@ def register_claim(
                     "Initial claim submission",
                 ),
             )
+            # 10. Save the event to the transactional outbox.
+            connection.execute(
+                """
+                INSERT INTO event_outbox (
+                    aggregate_type,
+                    aggregate_id,
+                    event_type,
+                    payload
+                )
+                VALUES (%s, %s, %s, %s)
+                """,
+                (
+                    "CLAIM",
+                    claim[0],
+                    "CLAIM_SUBMITTED",
+                    json.dumps(
+                    {
+                        "event_type": "CLAIM_SUBMITTED",
+                        "claim": {
+                            "claim_id": claim[0],
+                            "claim_number": claim[1],
+                            "policy_id": claim[2],
+                            "incident_date": str(claim[3]),
+                            "claimed_amount": str(claim[5]),
+                            "status": claim[6],
+                        },
+                    },
+                ),
+                ),
+            )
 
-    # 9. Publish the claim submission event after the database transaction succeeds.
+    # 10. Publish the claim submission event after the database transaction succeeds.
     new_claim = {
         "claim_id": claim[0],
-        "claim_number": claim[1],
+                    "claim_number": claim[1],
         "policy_id": claim[2],
         "incident_date": claim[3],
         "incident_description": claim[4],
@@ -195,7 +226,7 @@ def register_claim(
         "status": claim[6],
         "created_at": claim[7],
     }
-    publish_claim_event("CLAIM_SUBMITTED", new_claim)
+
     return new_claim
 
 def get_customer_claims(customer_id):
@@ -368,7 +399,7 @@ def get_staff_claim_details(claim_id):
 
             columns = [column.name for column in cur.description]
             return dict(zip(columns, row))
-        
+
 def create_claim_assessment(
     claim_id,
     assessor_id,
@@ -419,7 +450,7 @@ def create_claim_assessment(
     if repair_cost >= Decimal("10000000000"):
         raise ValueError("Estimated repair cost is too large.")
 
-    
+
     query = """
         SELECT
             c.claim_id,
@@ -450,7 +481,7 @@ def create_claim_assessment(
         WHERE c.claim_id = %s;
     """
 
-    
+
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             # Lock the claim while the assessment is processed.

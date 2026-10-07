@@ -3,7 +3,7 @@ services:
     image: postgres:18
     container_name: insurance-postgres
     env_file:
-      - .env.aws
+      - ${COMPOSE_ENV_FILE:-.env.docker}
     environment:
       POSTGRES_DB: insurance_claims_db
       POSTGRES_USER: postgres
@@ -14,9 +14,15 @@ services:
     restart: unless-stopped
 
   rabbitmq:
-    image: rabbitmq:4-management
     container_name: insurance-rabbitmq
+    image: rabbitmq:4-management
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   insurance-app:
     build:
@@ -26,10 +32,12 @@ services:
     ports:
       - "5001:5000"
     env_file:
-      - .env.aws
+      - ${COMPOSE_ENV_FILE:-.env.docker}
     depends_on:
-      - postgres
-      - rabbitmq
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
 
   event-consumer:
@@ -38,10 +46,26 @@ services:
     image: insurance-claims-workflow
     container_name: insurance-event-consumer
     env_file:
-      - .env.aws
+      - ${COMPOSE_ENV_FILE:-.env.docker}
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     command: python event_consumer.py
+    restart: unless-stopped
+
+  outbox-publisher:
+    build:
+      context: .
+    image: insurance-outbox-publisher
+    container_name: insurance-outbox-publisher
+    env_file:
+      - ${COMPOSE_ENV_FILE:-.env.docker}
+    depends_on:
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    command: python outbox_publisher.py
     restart: unless-stopped
 
 volumes:
