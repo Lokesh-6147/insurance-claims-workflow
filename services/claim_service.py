@@ -671,6 +671,27 @@ def record_claim_decision(
                 raise ValueError(
                     "An assessment is required before a decision."
                 )
+                        # Approval is blocked while fraud flags are unresolved.
+            if decision == "APPROVED":
+                cur.execute(
+                    """
+                    SELECT EXISTS (
+                        SELECT 1
+                        FROM fraud_flags
+                        WHERE claim_id = %s
+                          AND review_status IN ('OPEN', 'UNDER_REVIEW')
+                    );
+                    """,
+                    (claim_id,),
+                )
+
+                has_open_fraud_flags = cur.fetchone()[0]
+
+                if has_open_fraud_flags:
+                    raise ValueError(
+                        "Claim approval is blocked because unresolved "
+                        "fraud flags require review."
+                    )
 
             # Record the approver's decision.
             cur.execute(
