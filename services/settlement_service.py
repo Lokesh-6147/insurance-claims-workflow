@@ -3,6 +3,7 @@
 
 import psycopg
 from decimal import Decimal, InvalidOperation
+from services.sla_service import start_sla, complete_sla
 
 from db import get_db_connection
 
@@ -131,6 +132,12 @@ def create_settlement(claim_id, approved_amount, created_by=None):
                         created_by,
                         "Settlement record created; payment is pending.",
                     ),
+                )
+                 # Start the SLA for the settlement stage.
+                start_sla(
+                    claim_id,
+                    "SETTLEMENT_PENDING",
+                    conn,
                 )
 
     except psycopg.errors.UniqueViolation as exc:
@@ -288,6 +295,12 @@ def process_payment(
                     "Payment recorded successfully.",
                 ),
             )
+            # Complete the SLA for the settlement stage.
+            complete_sla(
+                  claim_id,
+                  "SETTLEMENT_PENDING",
+                  conn,
+              )
 
     return settlement_id
 def close_settled_claim(claim_id, closed_by=None):

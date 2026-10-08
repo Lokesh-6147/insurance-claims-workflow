@@ -3,6 +3,7 @@ import json
 import secrets
 from datetime import date
 from decimal import Decimal, InvalidOperation
+from services.sla_service import start_sla, complete_sla
 
 from db import get_db_connection
 
@@ -389,16 +390,17 @@ def get_staff_claim_details(claim_id):
         WHERE c.claim_id = %s;
     """
 
-    with get_db_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute(query, (claim_id,))
-            row = cur.fetchone()
+    connection = conn or get_db_connection()
 
-            if row is None:
-                return None
+    with connection.cursor() as cur:
+        cur.execute(query, (claim_id,))
+        row = cur.fetchone()
 
-            columns = [column.name for column in cur.description]
-            return dict(zip(columns, row))
+        if row is None:
+            return None
+
+        columns = [column.name for column in cur.description]
+        return dict(zip(columns, row))
 
 def create_claim_assessment(
     claim_id,
@@ -407,6 +409,7 @@ def create_claim_assessment(
     estimated_repair_cost,
     recommendation,
     assessment_notes=None,
+    conn=None,
 ):
     """Save an assessment for a claim."""
     allowed_recommendations = {
@@ -581,6 +584,12 @@ def create_claim_assessment(
                     ),
                 )
 
+                # Complete the SLA for the previous stage.
+                complete_sla(claim_id, previous_status, connection)
+
+                # Start the SLA for the new stage.
+                start_sla(claim_id, new_status, connection)
+
     return assessment_id
 
 def get_claim_assessments(claim_id):
@@ -633,6 +642,7 @@ def record_claim_decision(
     approver_id,
     decision,
     reason,
+    conn=None,
 ):
     """Record an authorized approver's decision and update claim status."""
 
@@ -662,7 +672,6 @@ def record_claim_decision(
 
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-
             # Lock the claim row to prevent simultaneous decisions.
             cur.execute(
                 """
@@ -776,6 +785,6 @@ def record_claim_decision(
                     reason.strip(),
                 ),
             )
-
+             
     return decision_id
 

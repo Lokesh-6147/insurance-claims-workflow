@@ -67,6 +67,19 @@ services:
         condition: service_healthy
     command: python outbox_publisher.py
     restart: unless-stopped
+    
+  sla-worker:
+    build:
+      context: .
+    image: insurance-sla-worker
+    container_name: insurance-sla-worker
+    env_file:
+      - ${COMPOSE_ENV_FILE:-.env.docker}
+    depends_on:
+      postgres:
+        condition: service_started
+    command: python sla_worker.py
+    restart: unless-stopped
 
 volumes:
   postgres_data:
