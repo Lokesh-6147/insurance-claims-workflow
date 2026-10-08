@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Vehicle | Insurance Claims</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef4f8;
+            margin: 0;
+            padding: 30px 15px;
+            color: #183b56;
+        }
+
+        .form-card {
+            background-color: white;
+            max-width: 520px;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            font-size: 25px;
+            text-align: center;
+        }
+
+        .description {
+            text-align: center;
+            color: #536575;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5df;
+            border-radius: 6px;
+        }
+
+        button, .back-link {
+            display: inline-block;
+            margin-top: 24px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: #176b87;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+        }
+
+        button:hover, .back-link:hover {
+            background-color: #10536b;
+        }
+
+        .error-message {
+            background-color: #fdecec;
+            color: #b42318;
+            border: 1px solid #f5b5b0;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-card">
+        <h1>Register Your Vehicle</h1>
+
+        <p class="description">
+            Add your four-wheeler details to your insurance account.
+        </p>
+
+        {% if error_message %}
+            <div class="error-message" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <label for="registration_number">
+                Vehicle Registration Number
+            </label>
+            <input
+                type="text"
+                id="registration_number"
+                name="registration_number"
+                maxlength="20"
+                placeholder="Example: AP05AB1234"
+                required
+            >
+
+            <label for="make">Vehicle Manufacturer</label>
+            <input
+                type="text"
+                id="make"
+                name="make"
+                maxlength="50"
+                placeholder="Example: Hyundai"
+                required
+            >
+
+            <label for="model">Vehicle Model</label>
+            <input
+                type="text"
+                id="model"
+                name="model"
+                maxlength="50"
+                placeholder="Example: Creta"
+                required
+            >
+
+            <label for="manufacturing_year">
+                Manufacturing Year (Optional)
+            </label>
+            <input
+                type="number"
+                id="manufacturing_year"
+                name="manufacturing_year"
+                min="1900"
+                max="2100"
+                placeholder="Example: 2023"
+            >
+
+            <button type="submit">Register Vehicle</button>
+        </form>
+
+        <a class="back-link" href="/dashboard">
+            Back to Dashboard
+        </a>
+    </div>
+</body>
+</html>

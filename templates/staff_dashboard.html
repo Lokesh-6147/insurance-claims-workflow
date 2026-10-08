@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Staff Dashboard | Insurance Claims</title>
 
     <link
@@ -52,29 +53,77 @@
         .status {
             font-weight: 600;
         }
+
+        .policy-status {
+            background: #fff3cd;
+            color: #856404;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .section-title {
+            color: #174a7e;
+            font-weight: 600;
+        }
+
+        .policy-card {
+            border: 1px solid #dce7f3;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 16px;
+            background: #f9fbfe;
+        }
+
+        .policy-number {
+            color: #174a7e;
+            font-weight: 700;
+        }
+
+        .customer-name {
+            font-weight: 600;
+        }
+
+        .action-buttons form {
+            display: inline;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- Navigation Bar -->
     <nav class="navbar navbar-dark">
         <div class="container-fluid px-4">
+
             <span class="navbar-brand mb-0 h1">
                 Insurance Claims — Staff Portal
             </span>
 
-            <a class="btn btn-outline-light btn-sm"
-               href="{{ url_for('staff_logout_page') }}">
+            <a
+                class="btn btn-outline-light btn-sm"
+                href="{{ url_for('staff_logout_page') }}"
+            >
                 Logout
             </a>
+
         </div>
     </nav>
 
+
     <main class="container-fluid px-4 py-4">
+
+        <!-- Staff Welcome Section -->
         <div class="dashboard-card">
-            <h2>Welcome, {{ staff_name }}!</h2>
+
+            <h2>
+                Welcome, {{ staff_name }}!
+            </h2>
 
             <p class="text-secondary">
-                Review submitted claims and monitor their current status.
+                Review policies, submitted claims, and monitor their
+                current status.
             </p>
 
             <hr>
@@ -82,86 +131,442 @@
             <h5>Your Assigned Roles</h5>
 
             {% if staff_roles %}
+
                 {% for role in staff_roles %}
-                    <span class="role-tag">{{ role }}</span>
+
+                    <span class="role-tag">
+                        {{ role }}
+                    </span>
+
                 {% endfor %}
+
             {% else %}
+
                 <p class="text-danger">
                     No roles are assigned to this account.
                 </p>
+
             {% endif %}
+
         </div>
 
+
+        <!-- =====================================================
+             PENDING POLICY APPROVAL
+             ===================================================== -->
+
+        {% if "Claims Approver" in staff_roles %}
+
         <div class="dashboard-card">
+
             <div class="d-flex justify-content-between
                         align-items-center mb-3">
-                <h4 class="mb-0">Claims Queue</h4>
+
+                <h4 class="mb-0 section-title">
+                    Pending Policy Approvals
+                </h4>
+
+                <span class="badge text-bg-warning">
+                    {{ pending_policies|length }} pending
+                </span>
+
+            </div>
+
+            <p class="text-secondary">
+                Review newly created policies and approve or reject
+                them before customers can register claims.
+            </p>
+
+
+            {% if pending_policies %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover">
+
+                        <thead>
+
+                            <tr>
+                                <th>Policy Number</th>
+                                <th>Customer</th>
+                                <th>Account ID</th>
+                                <th>Vehicle</th>
+                                <th>Coverage</th>
+                                <th>Premium</th>
+                                <th>Policy Period</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for policy in pending_policies %}
+
+                            <tr>
+
+                                <!-- Policy Number -->
+                                <td>
+                                    <span class="policy-number">
+                                        {{ policy.policy_number }}
+                                    </span>
+                                </td>
+
+
+                                <!-- Customer -->
+                                <td>
+                                    <span class="customer-name">
+                                        {{ policy.customer_name }}
+                                    </span>
+                                </td>
+
+
+                                <!-- Account ID -->
+                                <td>
+                                    {{ policy.account_id }}
+                                </td>
+
+
+                                <!-- Vehicle -->
+                                <td>
+                                    <strong>
+                                        {{ policy.registration_number }}
+                                    </strong>
+
+                                    <br>
+
+                                    <small class="text-secondary">
+                                        {{ policy.make }}
+                                        {{ policy.model }}
+                                    </small>
+                                </td>
+
+
+                                <!-- Coverage -->
+                                <td>
+                                    {{ policy.coverage_details }}
+                                </td>
+
+
+                                <!-- Premium -->
+                                <td>
+                                    ₹{{ "%.2f"|format(
+                                        policy.premium_amount
+                                    ) }}
+                                </td>
+
+
+                                <!-- Policy Period -->
+                                <td>
+
+                                    <strong>
+                                        {{ policy.start_date }}
+                                    </strong>
+
+                                    <br>
+
+                                    <small class="text-secondary">
+                                        to
+                                    </small>
+
+                                    <br>
+
+                                    <strong>
+                                        {{ policy.expiry_date }}
+                                    </strong>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+                                    <span class="policy-status">
+                                        {{ policy.status }}
+                                    </span>
+                                </td>
+
+
+                                <!-- Created At -->
+                                <td>
+                                    {{ policy.created_at }}
+                                </td>
+
+
+                                <!-- Actions -->
+                                <td>
+
+                                    <div class="action-buttons">
+
+                                        <!-- View -->
+                                        <a
+                                            href="{{
+                                                url_for(
+                                                    'staff_policy_details_page',
+                                                    policy_id=policy.policy_id
+                                                )
+                                            }}"
+                                            class="btn btn-sm btn-primary mb-1"
+                                        >
+                                            View
+                                        </a>
+
+
+                                        <!-- Approve -->
+                                        <form
+    method="POST"
+    action="{{
+        url_for(
+            'policy_decision_route',
+            policy_id=policy.policy_id
+        )
+    }}"
+    class="mb-1"
+>
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <input
+        type="hidden"
+        name="decision"
+        value="approve"
+    >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-success"
+                                                onclick="
+                                                    return confirm(
+                                                        'Are you sure you want to approve this policy?'
+                                                    );
+                                                "
+                                            >
+                                                Approve
+                                            </button>
+
+                                        </form>
+
+
+                                        <!-- Reject -->
+                                        <form
+    method="POST"
+    action="{{
+        url_for(
+            'policy_decision_route',
+            policy_id=policy.policy_id
+        )
+    }}"
+>
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <input
+        type="hidden"
+        name="decision"
+        value="reject"
+    >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-danger"
+                                                onclick="
+                                                    return confirm(
+                                                        'Are you sure you want to reject this policy?'
+                                                    );
+                                                "
+                                            >
+                                                Reject
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-success mb-0">
+
+                    <strong>No pending policies.</strong>
+
+                    There are currently no policies waiting for
+                    approval.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             CLAIMS QUEUE
+             ===================================================== -->
+
+        <div class="dashboard-card">
+
+            <div class="d-flex justify-content-between
+                        align-items-center mb-3">
+
+                <h4 class="mb-0">
+                    Claims Queue
+                </h4>
+
                 <span class="badge text-bg-primary">
                     {{ claims|length }} claim(s)
                 </span>
+
             </div>
 
+
             {% if claims %}
+
                 <div class="table-responsive">
+
                     <table class="table table-bordered table-hover">
+
                         <thead>
+
                             <tr>
+
                                 <th>Claim Number</th>
+
                                 <th>Policy Number</th>
+
                                 <th>Incident Date</th>
+
                                 <th>Claimed Amount</th>
+
                                 <th>Status</th>
+
                                 <th>Fraud Risk</th>
+
                                 <th>Submitted At</th>
+
                                 <th>Action</th>
+
                             </tr>
+
                         </thead>
 
+
                         <tbody>
+
                             {% for claim in claims %}
-                                <tr>
-                                    <td>
-                                        {{ claim.claim_number }}
-                                    </td>
-                                    <td>
-                                        {{ claim.policy_number }}
-                                    </td>
-                                    <td>
-                                        {{ claim.incident_date }}
-                                    </td>
-                                    <td>
-                                        {{ "%.2f"|format(
-                                            claim.claimed_amount
-                                        ) }}
-                                    </td>
-                                    <td class="status">
-                                        {{ claim.status }}
-                                    </td>
-                                    <td>
-                                        {{ claim.fraud_risk_level }}
-                                    </td>
-                                    <td>
-                                        {{ claim.created_at }}
-                                    </td>
-                                    <td>
-    <a
-        href="{{ url_for('staff_claim_details_page', claim_id=claim.claim_id) }}"
-        class="btn btn-sm btn-primary"
-    >
-        View Details
-    </a>
-</td>
-                                </tr>
+
+                            <tr>
+
+                                <!-- Claim Number -->
+                                <td>
+                                    {{ claim.claim_number }}
+                                </td>
+
+
+                                <!-- Policy Number -->
+                                <td>
+                                    {{ claim.policy_number }}
+                                </td>
+
+
+                                <!-- Incident Date -->
+                                <td>
+                                    {{ claim.incident_date }}
+                                </td>
+
+
+                                <!-- Claimed Amount -->
+                                <td>
+                                    ₹{{ "%.2f"|format(
+                                        claim.claimed_amount
+                                    ) }}
+                                </td>
+
+
+                                <!-- Status -->
+                                <td class="status">
+                                    {{ claim.status }}
+                                </td>
+
+
+                                <!-- Fraud Risk -->
+                                <td>
+                                    {{ claim.fraud_risk_level }}
+                                </td>
+
+
+                                <!-- Submitted At -->
+                                <td>
+                                    {{ claim.created_at }}
+                                </td>
+
+
+                                <!-- Action -->
+                                <td>
+
+                                    <a
+                                        href="{{
+                                            url_for(
+                                                'staff_claim_details_page',
+                                                claim_id=claim.claim_id
+                                            )
+                                        }}"
+                                        class="btn btn-sm btn-primary"
+                                    >
+                                        View Details
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
                             {% endfor %}
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             {% else %}
+
                 <div class="alert alert-info mb-0">
+
                     No claims are currently available in the queue.
+
                 </div>
+
             {% endif %}
+
         </div>
+
     </main>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
 </body>
 </html>
+

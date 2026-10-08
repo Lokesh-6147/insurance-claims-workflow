@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard | Insurance Claims</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            background: #eef4fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: #174a7e;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .role-tag {
+            display: inline-block;
+            background: #e0edff;
+            color: #174a7e;
+            padding: 7px 12px;
+            margin: 4px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .table th {
+            background: #174a7e;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .status {
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand mb-0 h1">
+                Insurance Claims — Staff Portal
+            </span>
+
+            <a class="btn btn-outline-light btn-sm"
+               href="{{ url_for('staff_logout_page') }}">
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <main class="container-fluid px-4 py-4">
+        <div class="dashboard-card">
+            <h2>Welcome, {{ staff_name }}!</h2>
+
+            <p class="text-secondary">
+                Review submitted claims and monitor their current status.
+            </p>
+
+            <hr>
+
+            <h5>Your Assigned Roles</h5>
+
+            {% if staff_roles %}
+                {% for role in staff_roles %}
+                    <span class="role-tag">{{ role }}</span>
+                {% endfor %}
+            {% else %}
+                <p class="text-danger">
+                    No roles are assigned to this account.
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between
+                        align-items-center mb-3">
+                <h4 class="mb-0">Claims Queue</h4>
+                <span class="badge text-bg-primary">
+                    {{ claims|length }} claim(s)
+                </span>
+            </div>
+
+            {% if claims %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Claim Number</th>
+                                <th>Policy Number</th>
+                                <th>Incident Date</th>
+                                <th>Claimed Amount</th>
+                                <th>Status</th>
+                                <th>Fraud Risk</th>
+                                <th>Submitted At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for claim in claims %}
+                                <tr>
+                                    <td>
+                                        {{ claim.claim_number }}
+                                    </td>
+                                    <td>
+                                        {{ claim.policy_number }}
+                                    </td>
+                                    <td>
+                                        {{ claim.incident_date }}
+                                    </td>
+                                    <td>
+                                        {{ "%.2f"|format(
+                                            claim.claimed_amount
+                                        ) }}
+                                    </td>
+                                    <td class="status">
+                                        {{ claim.status }}
+                                    </td>
+                                    <td>
+                                        {{ claim.fraud_risk_level }}
+                                    </td>
+                                    <td>
+                                        {{ claim.created_at }}
+                                    </td>
+                                    <td>
+    <a
+        href="{{ url_for('staff_claim_details_page', claim_id=claim.claim_id) }}"
+        class="btn btn-sm btn-primary"
+    >
+        View Details
+    </a>
+</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info mb-0">
+                    No claims are currently available in the queue.
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

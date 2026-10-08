@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration | Insurance Claims</title>
+
+    <style>
+        .error-message {
+            background-color: #fdecec;
+            color: #b42318;
+            border: 1px solid #f5b5b0;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Insurance Claims Processing System</h1>
+    <h2>Create Your Customer Account</h2>
+    
+    {% if error_message %}
+        <div class="error-message" role="alert">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="full_name">Full Name</label><br>
+        <input
+            type="text"
+            id="full_name"
+            name="full_name"
+            required
+        ><br><br>
+
+        <label for="email">Email Address</label><br>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            required
+        ><br><br>
+
+        <label for="phone">Phone Number</label><br>
+        <input
+            type="tel"
+            id="phone"
+            name="phone"
+            pattern="[0-9]{10}"
+            maxlength="10"
+            required
+        ><br><br>
+
+        <label for="password">Password</label><br>
+        <input
+            type="password"
+            id="password"
+            name="password"
+            minlength="8"
+            required
+        ><br><br>
+
+        <button type="submit">Create Account</button>
+    </form>
+</body>
+</html>

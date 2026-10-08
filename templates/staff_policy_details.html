@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Policy Details | Staff Portal</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            background: #eef4fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: #174a7e;
+        }
+
+        .details-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .page-title {
+            color: #174a7e;
+            font-weight: 700;
+        }
+
+        .section-title {
+            color: #174a7e;
+            font-weight: 600;
+            border-bottom: 1px solid #dce7f3;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #5d6d7e;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .policy-number {
+            color: #174a7e;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .pending-badge {
+            background: #fff3cd;
+            color: #856404;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .action-card {
+            background: #f8fafc;
+            border: 1px solid #dce7f3;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .action-card h5 {
+            color: #174a7e;
+            font-weight: 600;
+        }
+
+        .btn-approve {
+            min-width: 140px;
+        }
+
+        .btn-reject {
+            min-width: 140px;
+        }
+
+        .back-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======================================================
+         NAVIGATION
+    ======================================================= -->
+
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid px-4">
+
+            <span class="navbar-brand mb-0 h1">
+                Insurance Claims — Staff Portal
+            </span>
+
+            <a
+                href="{{ url_for('staff_logout_page') }}"
+                class="btn btn-outline-light btn-sm"
+            >
+                Logout
+            </a>
+
+        </div>
+    </nav>
+
+
+    <main class="container py-4">
+
+        <!-- ==================================================
+             BACK TO DASHBOARD
+        =================================================== -->
+
+        <div class="back-button">
+
+            <a
+                href="{{ url_for('staff_dashboard') }}"
+                class="btn btn-outline-primary"
+            >
+                ← Back to Staff Dashboard
+            </a>
+
+        </div>
+
+
+        <!-- ==================================================
+             POLICY HEADER
+        =================================================== -->
+
+        <div class="details-card">
+
+            <div
+                class="d-flex justify-content-between
+                       align-items-center flex-wrap gap-3"
+            >
+
+                <div>
+
+                    <h2 class="page-title mb-2">
+                        Policy Details
+                    </h2>
+
+                    <div class="policy-number">
+                        {{ policy.policy_number }}
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    {% if policy.status == "PENDING" %}
+
+                        <span class="pending-badge">
+                            PENDING APPROVAL
+                        </span>
+
+                    {% elif policy.status == "ACTIVE" %}
+
+                        <span class="badge bg-success fs-6">
+                            ACTIVE
+                        </span>
+
+                    {% elif policy.status == "REJECTED" %}
+
+                        <span class="badge bg-danger fs-6">
+                            REJECTED
+                        </span>
+
+                    {% elif policy.status == "EXPIRED" %}
+
+                        <span class="badge bg-secondary fs-6">
+                            EXPIRED
+                        </span>
+
+                    {% elif policy.status == "CANCELLED" %}
+
+                        <span class="badge bg-secondary fs-6">
+                            CANCELLED
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-secondary fs-6">
+                            {{ policy.status }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             CUSTOMER INFORMATION
+        =================================================== -->
+
+        <div class="details-card">
+
+            <h4 class="section-title">
+                Customer Information
+            </h4>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Customer Name
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.customer_name }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Account ID
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.account_id }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             VEHICLE INFORMATION
+        =================================================== -->
+
+        <div class="details-card">
+
+            <h4 class="section-title">
+                Vehicle Information
+            </h4>
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <div class="detail-label">
+                        Registration Number
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.registration_number }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="detail-label">
+                        Make
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.make }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="detail-label">
+                        Model
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.model }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             POLICY INFORMATION
+        =================================================== -->
+
+        <div class="details-card">
+
+            <h4 class="section-title">
+                Policy Information
+            </h4>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Coverage Details
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.coverage_details }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Premium Amount
+                    </div>
+
+                    <div class="detail-value">
+                        ₹{{ "%.2f"|format(policy.premium_amount) }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Policy Start Date
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.start_date }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Policy Expiry Date
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.expiry_date }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Current Status
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.status }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Policy Created At
+                    </div>
+
+                    <div class="detail-value">
+                        {{ policy.created_at }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             POLICY APPROVAL ACTIONS
+        =================================================== -->
+
+        {% if policy.status == "PENDING" %}
+
+        <div class="details-card">
+
+            <h4 class="section-title">
+                Policy Approval
+            </h4>
+
+            <div class="action-card">
+
+                <h5>
+                    Review this policy
+                </h5>
+
+                <p class="text-secondary mb-3">
+                    As a Claims Approver, you can approve or
+                    reject this pending policy.
+                </p>
+
+                <p class="text-secondary mb-0">
+                    <strong>Approve:</strong>
+                    The policy status changes from
+                    <strong>PENDING</strong> to
+                    <strong>ACTIVE</strong>.
+                    The customer can then register claims
+                    when the policy is valid.
+                </p>
+
+                <p class="text-secondary">
+                    <strong>Reject:</strong>
+                    The policy status changes from
+                    <strong>PENDING</strong> to
+                    <strong>REJECTED</strong>.
+                </p>
+
+
+                <!-- ==========================================
+                     SINGLE POLICY DECISION FORM
+                =========================================== -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'policy_decision_route',
+                        policy_id=policy.policy_id
+                    ) }}"
+                    class="d-flex gap-3 flex-wrap mt-4"
+                >
+
+                    <!-- CSRF TOKEN -->
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+
+                    <!-- APPROVE -->
+
+                    <button
+                        type="submit"
+                        name="decision"
+                        value="approve"
+                        class="btn btn-success btn-approve"
+                        onclick="return confirm(
+                            'Are you sure you want to approve this policy?'
+                        );"
+                    >
+                        Approve Policy
+                    </button>
+
+
+                    <!-- REJECT -->
+
+                    <button
+                        type="submit"
+                        name="decision"
+                        value="reject"
+                        class="btn btn-danger btn-reject"
+                        onclick="return confirm(
+                            'Are you sure you want to reject this policy?'
+                        );"
+                    >
+                        Reject Policy
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ==================================================
+             STAFF INFORMATION
+        =================================================== -->
+
+        <div class="details-card">
+
+            <h5 class="section-title">
+                Current Staff User
+            </h5>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Staff Name
+                    </div>
+
+                    <div class="detail-value">
+                        {{ staff_name }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="detail-label">
+                        Assigned Roles
+                    </div>
+
+                    <div class="detail-value">
+
+                        {% if staff_roles %}
+
+                            {% for role in staff_roles %}
+
+                                <span class="badge bg-primary me-1">
+                                    {{ role }}
+                                </span>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <span class="text-secondary">
+                                No roles assigned
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================================
+         BOOTSTRAP JAVASCRIPT
+    ======================================================= -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+</body>
+</html>

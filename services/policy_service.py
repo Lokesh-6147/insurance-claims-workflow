@@ -104,6 +104,7 @@ def create_policy(
         "status": policy[8],
     }
 
+
 def get_customer_policies(customer_id):
     """Return policies belonging to a specific customer."""
 
@@ -148,6 +149,227 @@ def get_customer_policies(customer_id):
         for policy in policies
     ]
 
+
+def get_pending_policies():
+    """Return all policies that are waiting for staff approval."""
+
+    with get_db_connection() as connection:
+        policies = connection.execute(
+            """
+            SELECT
+                p.policy_id,
+                p.policy_number,
+                p.customer_id,
+                c.account_id,
+                c.full_name,
+                p.vehicle_id,
+                v.registration_number,
+                v.make,
+                v.model,
+                p.coverage_details,
+                p.premium_amount,
+                p.start_date,
+                p.expiry_date,
+                p.status,
+                p.created_at
+            FROM policies AS p
+            JOIN customers AS c
+                ON p.customer_id = c.customer_id
+            JOIN vehicles AS v
+                ON p.vehicle_id = v.vehicle_id
+            WHERE p.status = 'PENDING'
+            ORDER BY p.created_at ASC
+            """
+        ).fetchall()
+
+    return [
+        {
+            "policy_id": policy[0],
+            "policy_number": policy[1],
+            "customer_id": policy[2],
+            "account_id": policy[3],
+            "customer_name": policy[4],
+            "vehicle_id": policy[5],
+            "registration_number": policy[6],
+            "make": policy[7],
+            "model": policy[8],
+            "coverage_details": policy[9],
+            "premium_amount": policy[10],
+            "start_date": policy[11],
+            "expiry_date": policy[12],
+            "status": policy[13],
+            "created_at": policy[14],
+        }
+        for policy in policies
+    ]
+
+
+def get_policy_by_id(policy_id):
+    """Return complete policy details for staff review."""
+
+    with get_db_connection() as connection:
+        policy = connection.execute(
+            """
+            SELECT
+                p.policy_id,
+                p.policy_number,
+                p.customer_id,
+                c.account_id,
+                c.full_name,
+                p.vehicle_id,
+                v.registration_number,
+                v.make,
+                v.model,
+                p.coverage_details,
+                p.premium_amount,
+                p.start_date,
+                p.expiry_date,
+                p.status,
+                p.created_at
+            FROM policies AS p
+            JOIN customers AS c
+                ON p.customer_id = c.customer_id
+            JOIN vehicles AS v
+                ON p.vehicle_id = v.vehicle_id
+            WHERE p.policy_id = %s
+            """,
+            (policy_id,),
+        ).fetchone()
+
+    if policy is None:
+        return None
+
+    return {
+        "policy_id": policy[0],
+        "policy_number": policy[1],
+        "customer_id": policy[2],
+        "account_id": policy[3],
+        "customer_name": policy[4],
+        "vehicle_id": policy[5],
+        "registration_number": policy[6],
+        "make": policy[7],
+        "model": policy[8],
+        "coverage_details": policy[9],
+        "premium_amount": policy[10],
+        "start_date": policy[11],
+        "expiry_date": policy[12],
+        "status": policy[13],
+        "created_at": policy[14],
+    }
+
+
+def approve_policy(policy_id):
+    """Approve a pending policy and change its status to ACTIVE."""
+
+    with get_db_connection() as connection:
+        with connection.transaction():
+            policy = connection.execute(
+                """
+                SELECT policy_id, policy_number, status
+                FROM policies
+                WHERE policy_id = %s
+                FOR UPDATE
+                """,
+                (policy_id,),
+            ).fetchone()
+
+            if policy is None:
+                raise ValueError("Policy not found.")
+
+            if policy[2] != "PENDING":
+                raise ValueError(
+                    f"Policy {policy[1]} cannot be approved because "
+                    f"its current status is {policy[2]}."
+                )
+
+            updated_policy = connection.execute(
+                """
+                UPDATE policies
+                SET status = 'ACTIVE'
+                WHERE policy_id = %s
+                RETURNING
+                    policy_id,
+                    policy_number,
+                    customer_id,
+                    vehicle_id,
+                    coverage_details,
+                    premium_amount,
+                    start_date,
+                    expiry_date,
+                    status
+                """,
+                (policy_id,),
+            ).fetchone()
+
+    return {
+        "policy_id": updated_policy[0],
+        "policy_number": updated_policy[1],
+        "customer_id": updated_policy[2],
+        "vehicle_id": updated_policy[3],
+        "coverage_details": updated_policy[4],
+        "premium_amount": updated_policy[5],
+        "start_date": updated_policy[6],
+        "expiry_date": updated_policy[7],
+        "status": updated_policy[8],
+    }
+
+
+def reject_policy(policy_id):
+    """Reject a pending policy and change its status to REJECTED."""
+
+    with get_db_connection() as connection:
+        with connection.transaction():
+            policy = connection.execute(
+                """
+                SELECT policy_id, policy_number, status
+                FROM policies
+                WHERE policy_id = %s
+                FOR UPDATE
+                """,
+                (policy_id,),
+            ).fetchone()
+
+            if policy is None:
+                raise ValueError("Policy not found.")
+
+            if policy[2] != "PENDING":
+                raise ValueError(
+                    f"Policy {policy[1]} cannot be rejected because "
+                    f"its current status is {policy[2]}."
+                )
+
+            updated_policy = connection.execute(
+                """
+                UPDATE policies
+                SET status = 'REJECTED'
+                WHERE policy_id = %s
+                RETURNING
+                    policy_id,
+                    policy_number,
+                    customer_id,
+                    vehicle_id,
+                    coverage_details,
+                    premium_amount,
+                    start_date,
+                    expiry_date,
+                    status
+                """,
+                (policy_id,),
+            ).fetchone()
+
+    return {
+        "policy_id": updated_policy[0],
+        "policy_number": updated_policy[1],
+        "customer_id": updated_policy[2],
+        "vehicle_id": updated_policy[3],
+        "coverage_details": updated_policy[4],
+        "premium_amount": updated_policy[5],
+        "start_date": updated_policy[6],
+        "expiry_date": updated_policy[7],
+        "status": updated_policy[8],
+    }
+
+
 def get_customer_claimable_policies(customer_id):
     """Return active policies that are valid today for this customer."""
 
@@ -188,3 +410,4 @@ def get_customer_claimable_policies(customer_id):
         }
         for policy in policies
     ]
+

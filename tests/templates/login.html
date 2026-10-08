@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login | Insurance Claims</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef4f8;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            background-color: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #183b56;
+            text-align: center;
+            font-size: 25px;
+        }
+
+        p {
+            color: #536575;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            color: #183b56;
+        }
+
+        input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5df;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 12px;
+            background-color: #176b87;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #10536b;
+        }
+
+        .error-message {
+            background-color: #fdecec;
+            color: #b42318;
+            border: 1px solid #f5b5b0;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        .register-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        a {
+            color: #176b87;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <h1>Customer Login</h1>
+        <p>Sign in to your insurance account</p>
+
+        {% if error_message %}
+            <div class="error-message" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                autocomplete="email"
+                required
+            >
+
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="register-link">
+            Don't have an account?
+            <a href="/register">Register here</a>
+        </div>
+    </div>
+</body>
+</html>

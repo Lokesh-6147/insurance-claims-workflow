@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS policies (
         CHECK (expiry_date > start_date),
 
     CONSTRAINT chk_policy_status
-        CHECK (status IN ('ACTIVE', 'EXPIRED', 'CANCELLED', 'PENDING'))
+        CHECK (status IN ('ACTIVE', 'EXPIRED', 'CANCELLED', 'PENDING', 'REJECTED'))
 );
 
 -- ==========================================

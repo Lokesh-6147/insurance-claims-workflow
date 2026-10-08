@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Insurance Claim</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: #eef4f8;
+            color: #263746;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 28px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #245b83;
+        }
+
+        .intro {
+            color: #607080;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5df;
+            border-radius: 6px;
+            font: inherit;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 22px;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #246b9b;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #194f75;
+        }
+
+        .error {
+            padding: 12px;
+            border-radius: 6px;
+            background: #fff0f0;
+            color: #a32121;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #245b83;
+        }
+
+        .empty-message {
+            padding: 15px;
+            background: #fff8e5;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Register an Insurance Claim</h1>
+
+        <p class="intro">
+            Enter the incident details below. Your policy will be checked
+            before the claim is registered.
+        </p>
+
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
+
+        {% if policies %}
+            <form method="POST" action="{{ url_for('claim_registration_page') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label for="policy_id">Insurance Policy</label>
+                <select id="policy_id" name="policy_id" required>
+                    <option value="">Select an eligible policy</option>
+                    {% for policy in policies %}
+                        <option value="{{ policy.policy_id }}"
+                            {% if request.form.get('policy_id') == policy.policy_id|string %}selected{% endif %}>
+                            {{ policy.policy_number }} —
+                            {{ policy.make }} {{ policy.model }} —
+                            {{ policy.registration_number }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="incident_date">Incident Date</label>
+                <input
+                    type="date"
+                    id="incident_date"
+                    name="incident_date"
+                    max="{{ now_date }}"
+                    value="{{ request.form.get('incident_date', '') }}"
+                    required
+                >
+
+                <label for="incident_description">Incident Description</label>
+                <textarea
+                    id="incident_description"
+                    name="incident_description"
+                    maxlength="5000"
+                    placeholder="Explain what happened..."
+                    required
+                >{{ request.form.get('incident_description', '') }}</textarea>
+
+                <label for="claimed_amount">Claimed Amount (₹)</label>
+                <input
+                    type="number"
+                    id="claimed_amount"
+                    name="claimed_amount"
+                    min="0.01"
+                    max="9999999999.99"
+                    step="0.01"
+                    value="{{ request.form.get('claimed_amount', '') }}"
+                    placeholder="Enter the amount"
+                    required
+                >
+
+                <button type="submit">Submit Claim</button>
+            </form>
+        {% else %}
+            <div class="empty-message">
+                You don't currently have an active policy valid today.
+                Please check your policy status or contact the insurance
+                team before registering a claim.
+            </div>
+        {% endif %}
+
+        <a class="back-link" href="{{ url_for('customer_dashboard') }}">
+            Back to Dashboard
+        </a>
+    </main>
+</body>
+</html>
