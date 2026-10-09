@@ -26,6 +26,7 @@ def publish_claim_event(event_type, claim):
 
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
+    channel.confirm_delivery()
 
     channel.queue_declare(
         queue=queue,
