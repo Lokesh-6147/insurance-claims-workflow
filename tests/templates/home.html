@@ -3,277 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Insurance Claims Processing System</title>
-
+    <meta name="theme-color" content="#0d3b78">
+    <meta name="description" content="Manage your insurance policies and claims securely with SafeInsure.">
+    <title>SafeInsure | Insurance Claims Portal</title>
     <style>
-        * {
-            box-sizing: border-box;
+        :root {
+            --navy: #102f60;
+            --blue: #0758bd;
+            --blue-2: #1476e8;
+            --sky: #eaf5ff;
+            --ink: #172f53;
+            --muted: #5c7190;
+            --line: #dce8f5;
+            --white: #fff;
+            --green: #07866e;
+            --shadow: 0 18px 50px rgba(21, 65, 121, .10);
         }
-
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: #eef4f8;
-            color: #183b56;
-
+            color: var(--ink);
+            background: #fff;
+            font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+        .site-header {
+            position: relative;
+            z-index: 2;
+            background: rgba(255,255,255,.96);
+            border-bottom: 1px solid #edf2f8;
+        }
+        .nav {
+            max-width: 1320px;
+            min-height: 78px;
+            margin: auto;
+            padding: 14px 28px;
             display: flex;
-            justify-content: center;
             align-items: center;
-
-            padding: 30px 16px;
+            justify-content: space-between;
+            gap: 28px;
         }
-
-        .container {
-            width: 100%;
-            max-width: 900px;
+        .brand {
+            display: inline-flex; align-items: center; gap: 12px;
+            text-decoration: none; min-width: 235px;
         }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+        .brand-mark {
+            width: 45px; height: 49px; display: grid; place-items: center;
+            color: var(--blue); flex: 0 0 auto;
         }
-
-        .header h1 {
-            margin: 0;
-            color: #176b87;
-            font-size: 32px;
+        .brand-mark svg { width: 45px; height: 49px; }
+        .brand-name { display: block; font-size: 25px; line-height: 1.1; font-weight: 800; letter-spacing: -.7px; color: var(--navy); }
+        .brand-subtitle { display: block; margin-top: 4px; color: #6680a3; font-size: 12px; letter-spacing: .2px; }
+        .nav-links { display: flex; align-items: center; justify-content: center; gap: 34px; }
+        .nav-links a { text-decoration: none; font-size: 14px; color: #24446f; font-weight: 600; padding: 12px 0; }
+        .nav-links a:hover { color: var(--blue); }
+        .trust { display: flex; align-items: center; gap: 9px; color: #214b7d; font-size: 13px; font-weight: 650; white-space: nowrap; }
+        .trust svg { width: 21px; height: 21px; color: var(--blue); }
+        .hero {
+            overflow: hidden; position: relative;
+            background:
+                radial-gradient(ellipse at 75% 35%, rgba(181,222,255,.72), transparent 34%),
+                linear-gradient(112deg, #f4faff 0%, #edf7ff 48%, #d9edff 100%);
         }
-
-        .header p {
-            margin-top: 12px;
-            color: #536575;
-            font-size: 17px;
-            line-height: 1.6;
+        .hero::before {
+            content: ""; position: absolute; width: 570px; height: 570px; border-radius: 50%;
+            right: 9%; top: -300px; border: 1px solid rgba(255,255,255,.75);
+            box-shadow: 0 0 0 42px rgba(255,255,255,.16), 0 0 0 88px rgba(255,255,255,.13);
         }
-
-        .welcome-card {
-            background: white;
-            padding: 40px;
-            border-radius: 14px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        .hero-inner {
+            max-width: 1320px; min-height: 390px; margin: auto; padding: 48px 28px 42px;
+            display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 30px;
+            position: relative;
         }
-
-        .welcome-title {
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: #183b56;
+        .eyebrow { margin: 0 0 14px; color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: 2.7px; text-transform: uppercase; }
+        .hero h1 { max-width: 630px; margin: 0; color: var(--navy); font-size: clamp(38px, 4.1vw, 59px); letter-spacing: -2.2px; line-height: 1.07; font-weight: 800; }
+        .hero-copy { max-width: 520px; color: #506b91; font-size: 17px; line-height: 1.75; margin: 18px 0 22px; }
+        .benefits { display: flex; flex-wrap: wrap; gap: 12px 22px; margin: 0 0 27px; padding: 0; list-style: none; }
+        .benefits li { display: flex; align-items: center; gap: 7px; color: #23476f; font-size: 12px; font-weight: 650; }
+        .check {
+            display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%;
+            background: var(--blue-2); color: #fff; font-size: 11px; line-height: 1; font-weight: 900;
         }
-
-        .welcome-text {
-            text-align: center;
-            color: #607080;
-            margin-bottom: 30px;
-            line-height: 1.6;
+        .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .btn {
+            min-height: 45px; display: inline-flex; justify-content: center; align-items: center; gap: 10px;
+            padding: 0 22px; border-radius: 8px; font-size: 14px; font-weight: 750; text-decoration: none;
+            border: 1px solid transparent; transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
         }
-
-        .options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { color: white; background: linear-gradient(135deg, #0754b2, #0875e5); box-shadow: 0 8px 18px rgba(7,88,189,.19); }
+        .btn-primary:hover { box-shadow: 0 12px 24px rgba(7,88,189,.25); }
+        .btn-outline { color: var(--blue); border-color: #8cb8ed; background: rgba(255,255,255,.55); }
+        .hero-art { min-height: 295px; position: relative; display: grid; place-items: center; }
+        .art-glow { position: absolute; width: 340px; height: 280px; border-radius: 50%; background: rgba(255,255,255,.5); filter: blur(3px); }
+        .shield-scene {
+            position: relative; width: min(100%, 410px); height: 290px; display: grid; place-items: center;
         }
-
-        .option-card {
-            border: 1px solid #d5e1e8;
-            border-radius: 10px;
-            padding: 25px 20px;
-            text-align: center;
-            background: #f8fbfd;
+        .shield-outline {
+            position: absolute; width: 255px; height: 255px; top: 10px;
+            background: rgba(255,255,255,.38); border: 2px solid rgba(255,255,255,.95);
+            clip-path: polygon(50% 0, 95% 20%, 92% 61%, 77% 83%, 50% 100%, 23% 83%, 8% 61%, 5% 20%);
+            filter: drop-shadow(0 12px 20px rgba(21,82,149,.09));
         }
-
-        .option-icon {
-            font-size: 38px;
-            margin-bottom: 12px;
+        .family-card {
+            position: relative; width: 250px; height: 218px; margin-top: 43px; border-radius: 48% 48% 23px 23px;
+            background: linear-gradient(160deg, #d7edff 0%, #a6d3f7 52%, #6ca7df 100%);
+            overflow: hidden; box-shadow: 0 22px 40px rgba(38,91,147,.16);
+            display: flex; align-items: flex-end; justify-content: center;
         }
-
-        .option-card h3 {
-            margin: 8px 0;
-            color: #183b56;
-            font-size: 20px;
+        .sun { position: absolute; width: 84px; height: 84px; top: 23px; right: 28px; border-radius: 50%; background: rgba(255,255,255,.65); }
+        .mountain { position: absolute; bottom: 0; width: 0; height: 0; border-left: 135px solid transparent; border-right: 135px solid transparent; border-bottom: 95px solid #72a8d5; }
+        .mountain.back { left: -62px; border-left-width: 115px; border-right-width: 115px; border-bottom-width: 80px; border-bottom-color: #b2d7f2; }
+        .person { position: relative; z-index: 1; width: 72px; height: 126px; margin: 0 -6px; }
+        .person .head { position: absolute; top: 0; left: 22px; width: 30px; height: 34px; border-radius: 48% 48% 44% 44%; background: #c58b67; }
+        .person .hair { position: absolute; z-index: 2; top: -3px; left: 20px; width: 34px; height: 18px; border-radius: 50% 50% 20% 20%; background: #3a2c2a; }
+        .person .body { position: absolute; top: 29px; left: 7px; width: 61px; height: 101px; border-radius: 22px 22px 0 0; background: #2764a3; }
+        .person.woman .body { background: #f1f6fc; }
+        .person.child { transform: scale(.72); transform-origin: bottom center; margin-left: -17px; margin-right: -13px; }
+        .person.child .body { background: #e2b34c; }
+        .floating-note {
+            position: absolute; display: flex; align-items: center; gap: 10px; padding: 13px 16px;
+            border: 1px solid rgba(255,255,255,.9); background: rgba(255,255,255,.88);
+            backdrop-filter: blur(10px); border-radius: 13px; box-shadow: 0 12px 30px rgba(26,73,125,.13);
         }
-
-        .option-card p {
-            min-height: 48px;
-            margin: 10px 0 20px;
-            color: #607080;
-            font-size: 14px;
-            line-height: 1.5;
+        .floating-note .note-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: #e3f1ff; color: var(--blue); }
+        .floating-note strong { display: block; font-size: 12px; color: var(--navy); }
+        .floating-note small { display: block; margin-top: 4px; color: #6a7e98; font-size: 10px; }
+        .note-top { top: 22px; right: 0; }
+        .note-bottom { bottom: 0; left: 0; }
+        .services-wrap { max-width: 1320px; margin: 0 auto; padding: 14px 28px 0; }
+        .services {
+            display: grid; grid-template-columns: repeat(5, 1fr); background: #f5faff;
+            border: 1px solid #edf5fd; border-radius: 14px; padding: 20px 12px;
         }
-
-        .button {
-            display: inline-block;
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 6px;
-
-            background-color: #176b87;
-            color: white;
-
-            text-decoration: none;
-            font-weight: bold;
-
-            transition: background-color 0.2s ease;
+        .service { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 7px 12px; border-right: 1px solid #e0edf9; }
+        .service:last-child { border-right: 0; }
+        .service-icon {
+            width: 49px; height: 49px; flex: 0 0 auto; display: grid; place-items: center;
+            border-radius: 50%; background: #d9ecff; color: var(--blue);
         }
-
-        .button:hover {
-            background-color: #10536b;
+        .service-icon svg { width: 23px; height: 23px; }
+        .service strong { display: block; color: var(--navy); font-size: 12px; line-height: 1.35; }
+        .service span { display: block; color: #6b82a0; font-size: 10px; line-height: 1.5; margin-top: 5px; }
+        .account-section { max-width: 1200px; margin: 0 auto; padding: 35px 28px 38px; }
+        .section-heading { text-align: center; margin-bottom: 22px; }
+        .section-heading h2 { margin: 0; font-size: 29px; letter-spacing: -.8px; color: var(--navy); }
+        .section-heading p { margin: 8px 0 0; color: #6980a0; font-size: 14px; }
+        .account-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .account-card {
+            display: flex; flex-direction: column; align-items: flex-start; padding: 23px 25px 22px;
+            border: 1px solid var(--line); border-radius: 13px; background: #fff; min-height: 215px;
+            box-shadow: 0 7px 22px rgba(26,70,122,.045); transition: transform .2s ease, box-shadow .2s ease;
         }
-
-        .button.secondary {
-            background-color: #245b83;
+        .account-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+        .account-card.customer { border-top: 3px solid #2d8aff; }
+        .account-card.staff { border-top: 3px solid #6963d9; }
+        .account-card.register { border-top: 3px solid #1aab8c; }
+        .account-icon { width: 51px; height: 51px; display: grid; place-items: center; border-radius: 50%; margin-bottom: 11px; background: #e2f0ff; color: var(--blue); }
+        .staff .account-icon { background: #eeecff; color: #5e57c7; }
+        .register .account-icon { background: #def7f0; color: #07866e; }
+        .account-icon svg { width: 25px; height: 25px; }
+        .account-card h3 { margin: 0; font-size: 19px; letter-spacing: -.3px; color: var(--navy); }
+        .account-card p { margin: 8px 0 18px; color: #637997; font-size: 13px; line-height: 1.55; max-width: 310px; flex: 1; }
+        .account-card .btn { width: 100%; min-height: 41px; font-size: 12px; }
+        .staff .btn { background: #5a52c8; color: white; }
+        .register .btn { background: #07866e; color: white; }
+        .site-footer { background: #142f53; color: #d6e4f6; }
+        .footer-inner { max-width: 1320px; margin: auto; padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; gap: 22px; }
+        .footer-brand { display: flex; align-items: center; gap: 10px; }
+        .footer-brand svg { width: 37px; height: 40px; color: white; }
+        .footer-brand strong { display: block; color: white; font-size: 16px; }
+        .footer-brand span { display: block; color: #b7cbe4; font-size: 10px; margin-top: 3px; }
+        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 23px; }
+        .footer-links a { color: #d6e4f6; text-decoration: none; font-size: 11px; }
+        .footer-links a:hover { color: white; text-decoration: underline; }
+        .copyright { font-size: 10px; color: #b7cbe4; white-space: nowrap; }
+        :focus-visible { outline: 3px solid #80baff; outline-offset: 3px; }
+        @media (max-width: 1000px) {
+            .nav-links { gap: 18px; }
+            .brand { min-width: auto; }
+            .hero-inner { grid-template-columns: 1fr .8fr; }
+            .services { grid-template-columns: repeat(3, 1fr); row-gap: 12px; }
+            .service:nth-child(3) { border-right: 0; }
+            .service:nth-child(4), .service:nth-child(5) { border-top: 1px solid #e0edf9; padding-top: 15px; }
         }
-
-        .button.secondary:hover {
-            background-color: #19496b;
+        @media (max-width: 720px) {
+            .nav { padding: 13px 18px; min-height: 70px; }
+            .nav-links { display: none; }
+            .trust { font-size: 11px; }
+            .brand-name { font-size: 21px; }
+            .hero-inner { grid-template-columns: 1fr; padding: 42px 22px 25px; gap: 8px; }
+            .hero h1 { font-size: clamp(38px, 9vw, 51px); letter-spacing: -1.6px; }
+            .hero-copy { font-size: 15px; }
+            .hero-art { min-height: 280px; }
+            .note-top { right: 0; }
+            .services-wrap { padding: 12px 16px 0; }
+            .services { grid-template-columns: 1fr 1fr; padding: 12px 8px; }
+            .service { justify-content: flex-start; border-right: 0; padding: 10px 6px; }
+            .service:nth-child(3), .service:nth-child(4), .service:nth-child(5) { border-top: 0; padding-top: 10px; }
+            .service:last-child { grid-column: 1 / -1; }
+            .service-icon { width: 41px; height: 41px; }
+            .account-section { padding: 32px 18px; }
+            .account-cards { grid-template-columns: 1fr; }
+            .account-card { min-height: auto; }
+            .footer-inner { flex-direction: column; text-align: center; padding: 24px 18px; }
+            .footer-brand { justify-content: center; }
+            .footer-links { gap: 15px; }
         }
-
-        .button.register {
-            background-color: #246b9b;
-        }
-
-        .button.register:hover {
-            background-color: #194f75;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 25px;
-            color: #708090;
-            font-size: 13px;
-        }
-
-        @media (max-width: 750px) {
-            .options {
-                grid-template-columns: 1fr;
-            }
-
-            .welcome-card {
-                padding: 30px 20px;
-            }
-
-            .header h1 {
-                font-size: 27px;
-            }
-
-            .option-card p {
-                min-height: auto;
-            }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
         }
     </style>
 </head>
-
 <body>
-
-    <main class="container">
-
-        <header class="header">
-            <h1>Insurance Claims Processing System</h1>
-
-            <p>
-                Manage your insurance policies and claims
-                through a secure and simple workflow.
-            </p>
-        </header>
-
-
-        <section class="welcome-card">
-
-            <h2 class="welcome-title">
-                Welcome
-            </h2>
-
-            <p class="welcome-text">
-                Please select an option below to continue.
-            </p>
-
-
-            <div class="options">
-
-                <!-- Customer Login -->
-                <div class="option-card">
-
-                    <div class="option-icon" aria-hidden="true">
-                        👤
-                    </div>
-
-                    <h3>Customer Login</h3>
-
-                    <p>
-                        Login to access your insurance account,
-                        policies, and claims.
-                    </p>
-
-                    <a
-                        href="{{ url_for('login_page') }}"
-                        class="button"
-                    >
-                        Customer Login
-                    </a>
-
-                </div>
-
-
-                <!-- Staff Login -->
-                <div class="option-card">
-
-                    <div class="option-icon" aria-hidden="true">
-                        👨‍💼
-                    </div>
-
-                    <h3>Staff Login</h3>
-
-                    <p>
-                        Login to manage claims and perform
-                        authorized staff activities.
-                    </p>
-
-                    <a
-                        href="{{ url_for('staff_login_page') }}"
-                        class="button secondary"
-                    >
-                        Staff Login
-                    </a>
-
-                </div>
-
-
-                <!-- Customer Registration -->
-                <div class="option-card">
-
-                    <div class="option-icon" aria-hidden="true">
-                        📝
-                    </div>
-
-                    <h3>New Customer?</h3>
-
-                    <p>
-                        Create a customer account to start
-                        your insurance journey.
-                    </p>
-
-                    <a
-                        href="{{ url_for('register_page') }}"
-                        class="button register"
-                    >
-                        Register
-                    </a>
-
-                </div>
-
+    <header class="site-header">
+        <nav class="nav" aria-label="Main navigation">
+            <a class="brand" href="{{ url_for('home') }}" aria-label="SafeInsure home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 48 52" fill="none"><path d="M24 2 44 9v14c0 13-8.7 22-20 27C12.7 45 4 36 4 23V9L24 2Z" stroke="currentColor" stroke-width="4"/><path d="M24 10 36 14v10c0 8-5 14-12 18-7-4-12-10-12-18V14l12-4Z" fill="currentColor" opacity=".12"/><path d="m17 25 5 5 10-12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span><span class="brand-name">SafeInsure</span><span class="brand-subtitle">Insurance Claims Portal</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="#home">Home</a><a href="#about">About</a><a href="#how-it-works">How It Works</a><a href="#contact">Contact</a>
             </div>
+            <div class="trust">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 20 5v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3Z" stroke="currentColor" stroke-width="2"/><path d="m8.5 11.5 2.3 2.3 4.8-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Secure &amp; Trusted
+            </div>
+        </nav>
+    </header>
 
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-inner">
+                <div class="hero-content">
+                    <p class="eyebrow">Protecting what matters</p>
+                    <h1>Insurance made simple.</h1>
+                    <p class="hero-copy">Manage your policies, file claims, and get the support you need — all in one secure place.</p>
+                    <ul class="benefits">
+                        <li><span class="check" aria-hidden="true">✓</span> Easy claims</li>
+                        <li><span class="check" aria-hidden="true">✓</span> Secure access</li>
+                        <li><span class="check" aria-hidden="true">✓</span> Clear claim status</li>
+                        <li><span class="check" aria-hidden="true">✓</span> Helpful support</li>
+                    </ul>
+                    <div class="actions">
+                        <a class="btn btn-primary" href="{{ url_for('register_page') }}">Get started <span aria-hidden="true">→</span></a>
+                        <a class="btn btn-outline" href="#how-it-works">Explore the portal</a>
+                    </div>
+                </div>
+                <div class="hero-art" aria-label="Illustration representing family protection" role="img">
+                    <div class="art-glow"></div><div class="shield-outline"></div>
+                    <div class="family-card">
+                        <div class="sun"></div><div class="mountain back"></div><div class="mountain"></div>
+                        <div class="person"><div class="hair"></div><div class="head"></div><div class="body"></div></div>
+                        <div class="person child"><div class="hair"></div><div class="head"></div><div class="body"></div></div>
+                        <div class="person woman"><div class="hair"></div><div class="head"></div><div class="body"></div></div>
+                    </div>
+                    <div class="floating-note note-top">
+                        <span class="note-icon"><svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M12 2 20 5v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3Z" stroke="currentColor" stroke-width="2"/><path d="m8.5 11.5 2.3 2.3 4.8-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                        <span><strong>Your security first</strong><small>Protection you can count on</small></span>
+                    </div>
+                    <div class="floating-note note-bottom">
+                        <span class="note-icon"><svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M4 12a8 8 0 1 1 2.4 5.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 17v-5h5M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span><strong>Stay up to date</strong><small>Track your claim journey</small></span>
+                    </div>
+                </div>
+            </div>
         </section>
 
+        <section class="services-wrap" id="about" aria-label="Portal benefits">
+            <div class="services">
+                <div class="service"><span class="service-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2 20 5v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3Z" fill="currentColor"/><path d="m8.5 11.5 2.3 2.3 4.8-5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></span><span><strong>Auto Insurance</strong><span>Drive with confidence</span></span></div>
+                <div class="service"><span class="service-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V10Z"/></svg></span><span><strong>Policy Management</strong><span>Your cover, clearly shown</span></span></div>
+                <div class="service"><span class="service-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-4.8-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6.2-8 11-8 11Z"/><path d="M8 12h8" stroke="white" stroke-width="1.8"/></svg></span><span><strong>Customer Care</strong><span>Support when you need it</span></span></div>
+                <div class="service"><span class="service-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10ZM3 21a9 9 0 0 1 18 0H3Z"/></svg></span><span><strong>Secure Accounts</strong><span>Private and protected</span></span></div>
+                <div class="service"><span class="service-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span><strong>Clear Claim Process</strong><span>Simple and transparent</span></span></div>
+            </div>
+        </section>
 
-        <footer class="footer">
-            <p>
-                Insurance Claims Processing Workflow
-            </p>
-        </footer>
-
+        <section class="account-section" id="how-it-works">
+            <div class="section-heading">
+                <h2>Access your account</h2>
+                <p>Choose your login type or create a new account to get started.</p>
+            </div>
+            <div class="account-cards">
+                <article class="account-card customer">
+                    <span class="account-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM3 22a9 9 0 0 1 18 0H3Z"/></svg></span>
+                    <h3>Customer Login</h3>
+                    <p>View your policies, file claims, and track your claim status in one place.</p>
+                    <a class="btn btn-primary" href="{{ url_for('login_page') }}">Login as customer <span aria-hidden="true">→</span></a>
+                </article>
+                <article class="account-card staff">
+                    <span class="account-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 21 5v6c0 5.5-3.7 9.5-9 12-5.3-2.5-9-6.5-9-12V5l9-3Zm0 5-4 1.5v3c0 2.5 1.5 4.5 4 6 2.5-1.5 4-3.5 4-6v-3L12 7Z"/></svg></span>
+                    <h3>Staff Login</h3>
+                    <p>Access authorized tools to review claims, assess cases, and manage policies.</p>
+                    <a class="btn" href="{{ url_for('staff_login_page') }}">Login as staff <span aria-hidden="true">→</span></a>
+                </article>
+                <article class="account-card register">
+                    <span class="account-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+                    <h3>Create an account</h3>
+                    <p>Start your insurance journey with a secure customer account in just a few steps.</p>
+                    <a class="btn" href="{{ url_for('register_page') }}">Register now <span aria-hidden="true">→</span></a>
+                </article>
+            </div>
+        </section>
     </main>
 
+    <footer class="site-footer" id="contact">
+        <div class="footer-inner">
+            <a class="footer-brand" href="{{ url_for('home') }}" style="text-decoration:none">
+                <svg viewBox="0 0 48 52" fill="none" aria-hidden="true"><path d="M24 2 44 9v14c0 13-8.7 22-20 27C12.7 45 4 36 4 23V9L24 2Z" stroke="currentColor" stroke-width="4"/><path d="m17 25 5 5 10-12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span><strong>SafeInsure</strong><span>Insurance Claims Portal</span></span>
+            </a>
+            <div class="footer-links"><a href="#about">About</a><a href="#how-it-works">How it works</a><a href="#contact">Contact</a></div>
+            <div class="copyright">© 2026 SafeInsure. Insurance Claims Portal.</div>
+        </div>
+    </footer>
 </body>
 </html>
