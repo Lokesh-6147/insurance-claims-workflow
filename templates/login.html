@@ -1,135 +1,195 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Login | Insurance Claims</title>
-
+    <meta name="theme-color" content="#102f60">
+    <meta name="description" content="Securely sign in to your SafeInsure customer account.">
+    <title>Customer Login | SafeInsure</title>
     <style>
+        :root {
+            --navy: #102f60;
+            --blue: #0758bd;
+            --blue-hover: #06499b;
+            --sky: #edf6ff;
+            --ink: #172f53;
+            --muted: #617694;
+            --line: #dce8f5;
+            --danger-bg: #fff0ef;
+            --danger: #a52822;
+        }
+        * { box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #eef4f8;
             margin: 0;
             min-height: 100vh;
+            padding: 28px;
+            display: grid;
+            place-items: center;
+            color: var(--ink);
+            font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+            background:
+                radial-gradient(circle at 12% 12%, rgba(183, 220, 255, .65), transparent 28%),
+                radial-gradient(circle at 90% 85%, rgba(207, 232, 255, .7), transparent 30%),
+                #f7fbff;
+        }
+        a { color: var(--blue); }
+        .page-shell {
+            width: min(100%, 960px);
+            min-height: 570px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            border: 1px solid rgba(220, 232, 245, .95);
+            border-radius: 24px;
+            background: #fff;
+            box-shadow: 0 24px 70px rgba(16, 47, 96, .13);
+        }
+        .welcome-panel {
+            position: relative;
+            isolation: isolate;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 36px;
+            padding: 38px;
+            overflow: hidden;
+            color: #fff;
+            background: linear-gradient(145deg, #0c3978 0%, #0758bd 58%, #1685e8 100%);
         }
-
-        .login-card {
-            background-color: white;
-            width: 90%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        .welcome-panel::before, .welcome-panel::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 50%;
         }
-
-        h1 {
-            color: #183b56;
-            text-align: center;
-            font-size: 25px;
-        }
-
-        p {
-            color: #536575;
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-top: 18px;
-            margin-bottom: 7px;
-            color: #183b56;
-        }
-
+        .welcome-panel::before { width: 360px; height: 360px; right: -170px; top: 90px; box-shadow: 0 0 0 35px rgba(255,255,255,.04), 0 0 0 72px rgba(255,255,255,.035); }
+        .welcome-panel::after { width: 210px; height: 210px; left: -120px; bottom: -70px; }
+        .brand { display: flex; align-items: center; gap: 12px; color: white; text-decoration: none; width: fit-content; }
+        .brand-mark { width: 44px; height: 48px; flex: 0 0 auto; }
+        .brand-name { display: block; font-size: 24px; line-height: 1.1; font-weight: 800; letter-spacing: -.6px; }
+        .brand-caption { display: block; margin-top: 5px; font-size: 11px; letter-spacing: .5px; color: #d7eaff; }
+        .welcome-copy { max-width: 360px; }
+        .eyebrow { margin: 0 0 14px; color: #bfe0ff; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+        .welcome-copy h1 { margin: 0; font-size: clamp(30px, 4vw, 43px); line-height: 1.13; letter-spacing: -1.2px; }
+        .welcome-copy p { margin: 18px 0 0; color: #e0efff; font-size: 14px; line-height: 1.8; }
+        .security-note { display: flex; align-items: center; gap: 11px; color: #e1f0ff; font-size: 12px; line-height: 1.5; }
+        .security-icon { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 auto; border-radius: 11px; background: rgba(255,255,255,.14); }
+        .form-panel { display: flex; align-items: center; padding: 44px 42px; }
+        .form-content { width: 100%; max-width: 360px; margin: 0 auto; }
+        .mobile-brand { display: none; }
+        .form-heading h2 { margin: 0; color: var(--navy); font-size: 28px; letter-spacing: -.7px; }
+        .form-heading p { margin: 9px 0 27px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+        .error-message { margin: 0 0 20px; padding: 12px 14px; border: 1px solid #f4c3bf; border-radius: 10px; color: var(--danger); background: var(--danger-bg); font-size: 13px; line-height: 1.5; }
+        .field { margin-bottom: 19px; }
+        label { display: block; margin-bottom: 8px; color: #263f62; font-size: 13px; font-weight: 700; }
         input {
-            box-sizing: border-box;
+            display: block;
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5df;
-            border-radius: 6px;
+            min-height: 48px;
+            padding: 12px 14px;
+            border: 1px solid #d2dfed;
+            border-radius: 9px;
+            outline: none;
+            background: #fbfdff;
+            color: var(--ink);
+            font: inherit;
+            font-size: 14px;
+            transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
         }
-
-        button {
+        input::placeholder { color: #8a9bb0; }
+        input:focus { border-color: #4d94e7; background: #fff; box-shadow: 0 0 0 4px rgba(7,88,189,.10); }
+        .submit-button {
             width: 100%;
-            margin-top: 24px;
-            padding: 12px;
-            background-color: #176b87;
-            color: white;
-            border: none;
-            border-radius: 6px;
+            min-height: 49px;
+            margin-top: 4px;
+            border: 0;
+            border-radius: 9px;
+            color: #fff;
+            background: linear-gradient(135deg, #0754b2, #0875e5);
+            box-shadow: 0 8px 18px rgba(7,88,189,.18);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 750;
             cursor: pointer;
+            transition: transform .18s ease, box-shadow .18s ease;
         }
-
-        button:hover {
-            background-color: #10536b;
+        .submit-button:hover { transform: translateY(-1px); box-shadow: 0 11px 22px rgba(7,88,189,.24); }
+        .submit-button:focus-visible, a:focus-visible { outline: 3px solid #80baff; outline-offset: 3px; }
+        .register-prompt { margin: 24px 0 0; text-align: center; color: var(--muted); font-size: 13px; }
+        .register-prompt a { margin-left: 4px; font-weight: 750; text-decoration: none; }
+        .register-prompt a:hover { text-decoration: underline; }
+        .form-footer { margin-top: 30px; padding-top: 17px; border-top: 1px solid #edf2f8; color: #8494a9; text-align: center; font-size: 11px; line-height: 1.6; }
+        @media (max-width: 720px) {
+            body { padding: 16px; }
+            .page-shell { max-width: 480px; min-height: auto; grid-template-columns: 1fr; border-radius: 20px; }
+            .welcome-panel { display: none; }
+            .form-panel { padding: 32px 25px 27px; }
+            .mobile-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
+            .mobile-brand .brand-mark { width: 36px; height: 40px; }
+            .mobile-brand .brand-name { color: var(--navy); font-size: 22px; }
+            .mobile-brand .brand-caption { color: var(--muted); }
+            .form-heading h2 { font-size: 26px; }
         }
-
-        .error-message {
-            background-color: #fdecec;
-            color: #b42318;
-            border: 1px solid #f5b5b0;
-            padding: 12px;
-            border-radius: 6px;
-            margin-top: 15px;
-        }
-
-        .register-link {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        a {
-            color: #176b87;
-        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
     </style>
 </head>
-
 <body>
-    <div class="login-card">
-        <h1>Customer Login</h1>
-        <p>Sign in to your insurance account</p>
-
-        {% if error_message %}
-            <div class="error-message" role="alert">
-                {{ error_message }}
+    <main class="page-shell">
+        <section class="welcome-panel" aria-label="SafeInsure information">
+            <a class="brand" href="{{ url_for('home') }}" aria-label="SafeInsure home">
+                <svg class="brand-mark" viewBox="0 0 48 54" aria-hidden="true" fill="none">
+                    <path d="M24 2 43 9v15c0 13-8 22-19 28C13 46 5 37 5 24V9L24 2Z" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round"/>
+                    <path d="m15 26 6 6 13-15" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span><span class="brand-name">SafeInsure</span><span class="brand-caption">Insurance made simpler</span></span>
+            </a>
+            <div class="welcome-copy">
+                <p class="eyebrow">Your cover. Your control.</p>
+                <h1>Welcome back to peace of mind.</h1>
+                <p>Sign in to keep track of your vehicle policy, follow claim progress, and manage your insurance details in one place.</p>
             </div>
-        {% endif %}
+            <div class="security-note">
+                <span class="security-icon" aria-hidden="true">&#128274;</span>
+                <span><strong>Account access</strong><br>Sign in with your registered email and password.</span>
+            </div>
+        </section>
 
-        <form method="POST">
-            <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token() }}"
-            >
+        <section class="form-panel" aria-labelledby="login-heading">
+            <div class="form-content">
+                <a class="brand mobile-brand" href="{{ url_for('home') }}" aria-label="SafeInsure home">
+                    <svg class="brand-mark" viewBox="0 0 48 54" aria-hidden="true" fill="none">
+                        <path d="M24 2 43 9v15c0 13-8 22-19 28C13 46 5 37 5 24V9L24 2Z" stroke="#0758bd" stroke-width="3.2" stroke-linejoin="round"/>
+                        <path d="m15 26 6 6 13-15" stroke="#0758bd" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span><span class="brand-name">SafeInsure</span><span class="brand-caption">Insurance made simpler</span></span>
+                </a>
+                <header class="form-heading">
+                    <h2 id="login-heading">Customer sign in</h2>
+                    <p>Enter your account details to continue to your customer portal.</p>
+                </header>
 
-            <label for="email">Email Address</label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                autocomplete="email"
-                required
-            >
+                {% if error_message %}
+                    <div class="error-message" role="alert">{{ error_message }}</div>
+                {% endif %}
 
-            <label for="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                autocomplete="current-password"
-                required
-            >
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="field">
+                        <label for="email">Email address</label>
+                        <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
+                    </div>
+                    <button class="submit-button" type="submit">Sign in securely <span aria-hidden="true">&rarr;</span></button>
+                </form>
 
-            <button type="submit">Login</button>
-        </form>
-
-        <div class="register-link">
-            Don't have an account?
-            <a href="/register">Register here</a>
-        </div>
-    </div>
+                <p class="register-prompt">New to SafeInsure? <a href="{{ url_for('register_page') }}">Create an account</a></p>
+                <div class="form-footer">SafeInsure Customer Portal<br>For your security, use your own registered account.</div>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

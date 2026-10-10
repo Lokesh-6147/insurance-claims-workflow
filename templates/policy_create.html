@@ -4,157 +4,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Insurance Policy</title>
+    <title>Create Insurance Policy | SafeInsure</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #eef4f8;
-            color: #183b56;
             margin: 0;
-            padding: 30px 15px;
+            min-height: 100vh;
+            padding: 30px 16px;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f6fc;
+            color: #183153;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .policy-card {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 30px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 18px 50px rgba(25, 55, 95, 0.10);
         }
 
-        h1 {
-            color: #176b87;
-            margin-top: 0;
+        .left-panel {
+            padding: 42px 32px;
+            background: linear-gradient(145deg, #0b3b78, #1675c9);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: 700;
+            margin-bottom: 38px;
+        }
+
+        .brand span {
+            color: #8dd7ff;
+        }
+
+        .left-panel h1 {
+            font-size: 30px;
+            line-height: 1.3;
+            margin: 0 0 16px;
+        }
+
+        .left-panel p {
+            color: #e1efff;
+            font-size: 14px;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .benefits {
+            margin-top: 28px;
+            font-size: 14px;
+            line-height: 2.2;
+            color: #f1f7ff;
+        }
+
+        .form-panel {
+            padding: 40px;
+        }
+
+        .form-panel h2 {
+            margin: 0 0 10px;
+            font-size: 27px;
+            color: #17345b;
+        }
+
+        .description {
+            margin: 0 0 24px;
+            color: #687a92;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .error-message {
+            padding: 12px;
+            margin-bottom: 18px;
+            background: #fdecec;
+            color: #a12626;
+            border: 1px solid #f5b5b0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
         }
 
         label {
             display: block;
-            margin-top: 18px;
-            margin-bottom: 6px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            color: #344761;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         input,
         textarea,
         select {
-            box-sizing: border-box;
             width: 100%;
-            padding: 11px;
-            border: 1px solid #cbd8e0;
-            border-radius: 6px;
-            font-size: 15px;
+            padding: 12px 14px;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            background: #fbfdff;
+            color: #183153;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.18s ease,
+                        box-shadow 0.18s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #2476cc;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(36, 118, 204, 0.12);
         }
 
         textarea {
             min-height: 100px;
             resize: vertical;
+            line-height: 1.6;
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 6px;
+            color: #71829a;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .date-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
         }
 
         button {
-            margin-top: 24px;
-            padding: 12px 20px;
+            width: 100%;
+            margin-top: 7px;
+            padding: 14px;
             border: none;
-            border-radius: 6px;
-            background-color: #176b87;
-            color: white;
-            font-size: 16px;
+            border-radius: 8px;
+            background: #176bc0;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #10536b;
-        }
-
-        .error-message {
-            padding: 12px;
-            background-color: #fdecec;
-            color: #a12626;
-            border-radius: 6px;
+            background: #0d529b;
         }
 
         .back-link {
-            display: inline-block;
-            margin-top: 18px;
-            color: #176b87;
+            display: block;
+            margin-top: 16px;
+            padding: 12px;
+            border: 1px solid #d5e2f1;
+            border-radius: 8px;
+            color: #176bc0;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .back-link:hover {
+            background: #f2f7fd;
+        }
+
+        @media (max-width: 760px) {
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 540px;
+            }
+
+            .left-panel {
+                padding: 28px;
+            }
+
+            .brand {
+                margin-bottom: 22px;
+            }
+
+            .left-panel h1 {
+                font-size: 26px;
+            }
+
+            .benefits {
+                margin-top: 14px;
+            }
+
+            .form-panel {
+                padding: 30px 24px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .date-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="policy-card">
-        <h1>Create Insurance Policy</h1>
+    <main class="container">
+        <section class="left-panel">
+            <div class="brand">Safe<span>Insure</span></div>
 
-        <p>Enter the details for your registered vehicle.</p>
+            <h1>Insurance that works for you.</h1>
 
-        {% if error_message %}
-            <div class="error-message" role="alert">
-                {{ error_message }}
+            <p>
+                Create a policy for your registered four-wheeler and
+                manage your insurance information through your account.
+            </p>
+
+            <div class="benefits">
+                ✓ Select a registered vehicle<br>
+                ✓ Enter your coverage details<br>
+                ✓ Review your policy dates and premium
             </div>
-        {% endif %}
+        </section>
 
-        <form method="POST">
-            <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token() }}"
-            >
-            
-<label for="vehicle_id">Select Your Vehicle</label>
-<select id="vehicle_id" name="vehicle_id" required>
-    <option value="">-- Select a vehicle --</option>
+        <section class="form-panel">
+            <h2>Create an insurance policy</h2>
 
-    {% for vehicle in vehicles %}
-        <option value="{{ vehicle.vehicle_id }}">
-            {{ vehicle.registration_number }} -
-            {{ vehicle.make }} {{ vehicle.model }}
-        </option>
-    {% endfor %}
-</select>
+            <p class="description">
+                Complete the form below with your vehicle and policy details.
+            </p>
 
-            <label for="coverage_details">Coverage Details</label>
-            <textarea
-                id="coverage_details"
-                name="coverage_details"
-                required
-                maxlength="2000"
-                placeholder="Describe the sample coverage"
-            ></textarea>
+            {% if error_message %}
+                <div class="error-message" role="alert">
+                    {{ error_message }}
+                </div>
+            {% endif %}
 
-            <label for="premium_amount">Premium Amount (₹)</label>
-            <input
-                type="number"
-                id="premium_amount"
-                name="premium_amount"
-                min="0"
-                max="999999999.99"
-                step="0.01"
-                required
-            >
+            <form method="POST">
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
 
-            <label for="start_date">Policy Start Date</label>
-            <input
-                type="date"
-                id="start_date"
-                name="start_date"
-                required
-            >
+                <div class="form-group">
+                    <label for="vehicle_id">Select Your Vehicle</label>
+                    <select id="vehicle_id" name="vehicle_id" required>
+                        <option value="">-- Select a vehicle --</option>
 
-            <label for="expiry_date">Policy Expiry Date</label>
-            <input
-                type="date"
-                id="expiry_date"
-                name="expiry_date"
-                required
-            >
+                        {% for vehicle in vehicles %}
+                            <option value="{{ vehicle.vehicle_id }}">
+                                {{ vehicle.registration_number }} -
+                                {{ vehicle.make }} {{ vehicle.model }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <button type="submit">Submit Policy</button>
-        </form>
+                <div class="form-group">
+                    <label for="coverage_details">Coverage Details</label>
+                    <textarea
+                        id="coverage_details"
+                        name="coverage_details"
+                        required
+                        maxlength="2000"
+                        placeholder="Describe the intended insurance coverage"
+                    ></textarea>
+                    <span class="help-text">
+                        Enter the coverage information required by your application.
+                    </span>
+                </div>
 
-        <a class="back-link" href="{{ url_for('customer_dashboard') }}">
-            Back to Dashboard
-        </a>
-    </div>
+                <div class="form-group">
+                    <label for="premium_amount">Premium Amount (₹)</label>
+                    <input
+                        type="number"
+                        id="premium_amount"
+                        name="premium_amount"
+                        min="0"
+                        max="999999999.99"
+                        step="0.01"
+                        placeholder="Enter premium amount"
+                        required
+                    >
+                </div>
+
+                <div class="date-grid">
+                    <div class="form-group">
+                        <label for="start_date">Policy Start Date</label>
+                        <input
+                            type="date"
+                            id="start_date"
+                            name="start_date"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expiry_date">Policy Expiry Date</label>
+                        <input
+                            type="date"
+                            id="expiry_date"
+                            name="expiry_date"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <button type="submit">Submit Policy</button>
+            </form>
+
+            <a class="back-link"
+               href="{{ url_for('customer_dashboard') }}">
+                ← Back to Dashboard
+            </a>
+        </section>
+    </main>
 </body>
 </html>

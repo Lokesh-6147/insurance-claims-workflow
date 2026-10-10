@@ -13,179 +13,970 @@
     >
 
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #173b70;
+            --sidebar-bg: #102744;
+            --sidebar-hover: #1d3a5e;
+            --page-bg: #f4f7fb;
+            --text: #243247;
+            --muted: #758398;
+            --border: #e5ebf3;
+            --success: #15803d;
+            --danger: #b91c1c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #eef4fb;
-            font-family: Arial, sans-serif;
+            margin: 0;
+            background: var(--page-bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
         }
 
-        .navbar {
-            background: #174a7e;
+        a {
+            text-decoration: none;
         }
 
-        .dashboard-card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
+        /* Sidebar */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            width: 245px;
+            padding: 25px 16px;
+            background: var(--sidebar-bg);
+            color: #fff;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 10px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 39px;
+            height: 39px;
+            border-radius: 11px;
+            background: #3478f6;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .brand-name {
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: #a9bad0;
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .sidebar-label {
+            margin: 28px 10px 12px;
+            color: #92a6c0;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+            padding: 12px 13px;
+            border-radius: 9px;
+            color: #c5d2e2;
+            font-size: 13px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        .sidebar-link.active {
+            box-shadow: inset 3px 0 #5b96ff;
+        }
+
+        .nav-icon {
+            display: inline-flex;
+            justify-content: center;
+            width: 20px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            margin-top: 35px;
+            padding: 15px 10px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            color: #a9bad0;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* Main content */
+
+        .main-content {
+            min-height: 100vh;
+            margin-left: 245px;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            min-height: 76px;
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.97);
+        }
+
+        .topbar-title {
+            margin: 0;
+            color: #263951;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .topbar-subtitle {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .staff-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e2edff;
+            color: #2057a6;
+            font-weight: 700;
+        }
+
+        .profile-name {
+            color: #25364c;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .profile-role {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .page-content {
+            padding: 28px 30px;
+        }
+
+        .welcome-heading {
+            margin: 0 0 8px;
+            color: #1b2d46;
+            font-size: 27px;
+            font-weight: 700;
+        }
+
+        .welcome-text {
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .welcome-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .date-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* Summary cards */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 17px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            min-width: 0;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #fff;
+            box-shadow: 0 3px 12px rgba(28, 52, 84, 0.035);
+        }
+
+        .summary-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 17px;
+        }
+
+        .summary-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #eaf1ff;
+            color: #2563eb;
+            font-size: 18px;
+        }
+
+        .summary-icon.green {
+            background: #e6f7ed;
+            color: #16803d;
+        }
+
+        .summary-icon.orange {
+            background: #fff3df;
+            color: #b66a08;
+        }
+
+        .summary-icon.purple {
+            background: #f0eaff;
+            color: #7544cf;
+        }
+
+        .summary-number {
+            margin-bottom: 7px;
+            color: #1c2d45;
+            font-size: 29px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .summary-description {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* General cards */
+
+        .content-card {
+            margin-bottom: 25px;
+            padding: 23px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #fff;
+            box-shadow: 0 3px 12px rgba(28, 52, 84, 0.035);
+            scroll-margin-top: 95px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            margin: 0;
+            color: #1c2e47;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .section-description {
+            margin-bottom: 19px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .section-count {
+            display: inline-block;
+            flex-shrink: 0;
+            padding: 7px 11px;
+            border-radius: 20px;
+            background: #eaf1ff;
+            color: #245bb4;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .section-count.warning {
+            background: #fff2d7;
+            color: #93600a;
+        }
+
+        /* Role tags */
+
+        .roles-area {
             margin-bottom: 24px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .roles-heading {
+            margin-bottom: 12px;
+            color: #263951;
+            font-size: 13px;
+            font-weight: 700;
         }
 
         .role-tag {
             display: inline-block;
-            background: #e0edff;
-            color: #174a7e;
-            padding: 7px 12px;
-            margin: 4px;
+            margin: 3px 5px 3px 0;
+            padding: 7px 11px;
+            border: 1px solid #d8e5fa;
             border-radius: 20px;
-            font-size: 14px;
-        }
-
-        .table th {
-            background: #174a7e;
-            color: white;
-            white-space: nowrap;
-        }
-
-        .table td {
-            vertical-align: middle;
-        }
-
-        .status {
-            font-weight: 600;
-        }
-
-        .policy-status {
-            background: #fff3cd;
-            color: #856404;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .section-title {
-            color: #174a7e;
-            font-weight: 600;
-        }
-
-        .policy-card {
-            border: 1px solid #dce7f3;
-            border-radius: 10px;
-            padding: 18px;
-            margin-bottom: 16px;
-            background: #f9fbfe;
-        }
-
-        .policy-number {
-            color: #174a7e;
+            background: #eef4ff;
+            color: #2457a5;
+            font-size: 11px;
             font-weight: 700;
         }
 
+        /* Search */
+
+        .table-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .table-search {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px 12px;
+            border: 1px solid #dce4ef;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .table-search:focus {
+            border-color: #80aaff;
+            outline: 3px solid rgba(37, 99, 235, 0.1);
+        }
+
+        /* Tables */
+
+        .table-responsive {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+        }
+
+        .dashboard-table {
+            min-width: 1050px;
+            margin-bottom: 0;
+            font-size: 12px;
+        }
+
+        .dashboard-table th {
+            padding: 14px 12px;
+            border-bottom: 1px solid #dfe7f1;
+            background: #f1f5fb;
+            color: #42546c;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .dashboard-table td {
+            padding: 14px 12px;
+            border-color: #edf1f6;
+            color: #45556a;
+            vertical-align: middle;
+        }
+
+        .dashboard-table tbody tr:hover > * {
+            background: #f8fbff;
+        }
+
+        .policy-number,
+        .claim-number {
+            color: #225fc0;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
         .customer-name {
-            font-weight: 600;
+            color: #25364c;
+            font-weight: 700;
+        }
+
+        .muted-small {
+            display: inline-block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 20px;
+            background: #edf2f8;
+            color: #526176;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-pending,
+        .status-submitted,
+        .status-settlement-pending,
+        .status-under-review,
+        .status-document-verification {
+            background: #fff3d8;
+            color: #91610b;
+        }
+
+        .status-active,
+        .status-approved,
+        .status-settled,
+        .status-completed {
+            background: #e3f7e9;
+            color: #18753b;
+        }
+
+        .status-rejected,
+        .status-fraud-flagged {
+            background: #fee8e7;
+            color: #b42318;
+        }
+
+        .status-assessment,
+        .status-assessment-in-progress {
+            background: #e8efff;
+            color: #2857b6;
+        }
+
+        .risk-low {
+            background: #e3f7e9;
+            color: #18753b;
+        }
+
+        .risk-medium {
+            background: #fff3d8;
+            color: #91610b;
+        }
+
+        .risk-high,
+        .risk-critical {
+            background: #fee8e7;
+            color: #b42318;
+        }
+
+        /* Buttons */
+
+        .btn {
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .btn-primary:hover {
+            border-color: #1d4ed8;
+            background: #1d4ed8;
+        }
+
+        .btn-success {
+            background: #16803d;
+        }
+
+        .btn-outline-secondary {
+            border-color: #d7e0ec;
+            color: #53647a;
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-width: 190px;
         }
 
         .action-buttons form {
-            display: inline;
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .action-buttons .btn {
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            padding: 24px;
+            border: 1px dashed #d6e1ee;
+            border-radius: 9px;
+            background: #f8fbff;
+            color: #617187;
+            font-size: 13px;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .empty-state strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #263951;
+        }
+
+        .page-footer {
+            padding: 5px 0 22px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* Responsive layout */
+
+        @media (max-width: 1200px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .page-content {
+                padding: 23px 20px;
+            }
+
+            .topbar {
+                padding: 14px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                padding: 14px;
+            }
+
+            .brand {
+                padding-bottom: 14px;
+            }
+
+            .sidebar-label {
+                margin-top: 15px;
+            }
+
+            .sidebar-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .sidebar-link {
+                margin-bottom: 0;
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .topbar {
+                position: relative;
+                min-height: 65px;
+                padding: 12px 16px;
+            }
+
+            .page-content {
+                padding: 20px 13px;
+            }
+
+            .welcome-row {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .welcome-heading {
+                font-size: 23px;
+            }
+
+            .summary-grid {
+                gap: 10px;
+            }
+
+            .summary-card {
+                padding: 14px;
+            }
+
+            .summary-number {
+                font-size: 25px;
+            }
+
+            .content-card {
+                padding: 15px;
+            }
+
+            .section-header,
+            .table-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .table-search {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-details {
+                display: none;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-dark">
-        <div class="container-fluid px-4">
+    <!-- Sidebar navigation -->
+    <aside class="sidebar">
 
-            <span class="navbar-brand mb-0 h1">
-                Insurance Claims — Staff Portal
+        <a href="#overview" class="brand">
+            <span class="brand-icon">C</span>
+            <span class="brand-name">
+                ClaimOS
+                <span class="brand-subtitle">Insurance Staff Portal</span>
             </span>
+        </a>
 
-            <a
-                class="btn btn-outline-light btn-sm"
-                href="{{ url_for('staff_logout_page') }}"
-            >
-                Logout
+        <div class="sidebar-label">Workspace</div>
+
+        <nav class="sidebar-links" aria-label="Staff navigation">
+
+            <a href="#overview" class="sidebar-link active">
+                <span class="nav-icon">▦</span>
+                Dashboard
             </a>
 
-        </div>
-    </nav>
-
-
-    <main class="container-fluid px-4 py-4">
-
-        <!-- Staff Welcome Section -->
-        <div class="dashboard-card">
-
-            <h2>
-                Welcome, {{ staff_name }}!
-            </h2>
-
-            <p class="text-secondary">
-                Review policies, submitted claims, and monitor their
-                current status.
-            </p>
-
-            <hr>
-
-            <h5>Your Assigned Roles</h5>
-
-            {% if staff_roles %}
-
-                {% for role in staff_roles %}
-
-                    <span class="role-tag">
-                        {{ role }}
-                    </span>
-
-                {% endfor %}
-
-            {% else %}
-
-                <p class="text-danger">
-                    No roles are assigned to this account.
-                </p>
-
+            {% if "Claims Approver" in staff_roles %}
+            <a href="#policy-approvals" class="sidebar-link">
+                <span class="nav-icon">▤</span>
+                Policy Approvals
+            </a>
             {% endif %}
 
+            <a href="#claims-queue" class="sidebar-link">
+                <span class="nav-icon">▣</span>
+                Claims Management
+            </a>
+
+            <a href="#assigned-roles" class="sidebar-link">
+                <span class="nav-icon">♙</span>
+                Assigned Roles
+            </a>
+
+        </nav>
+
+        <div class="sidebar-label">Account</div>
+
+        <nav aria-label="Account navigation">
+            <a
+                href="{{ url_for('staff_logout_page') }}"
+                class="sidebar-link"
+            >
+                <span class="nav-icon">↪</span>
+                Logout
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <strong>Insurance Claims System</strong><br>
+            Staff workspace
         </div>
 
+    </aside>
 
-        <!-- =====================================================
-             PENDING POLICY APPROVAL
-             ===================================================== -->
 
-        {% if "Claims Approver" in staff_roles %}
+    <!-- Main page -->
+    <div class="main-content">
 
-        <div class="dashboard-card">
+        <!-- Top header -->
+        <header class="topbar">
 
-            <div class="d-flex justify-content-between
-                        align-items-center mb-3">
+            <div>
+                <h1 class="topbar-title">Staff Dashboard</h1>
+                <div class="topbar-subtitle">
+                    Insurance claims processing workspace
+                </div>
+            </div>
 
-                <h4 class="mb-0 section-title">
-                    Pending Policy Approvals
-                </h4>
+            <div class="staff-profile">
 
-                <span class="badge text-bg-warning">
-                    {{ pending_policies|length }} pending
-                </span>
+                <div class="avatar">
+                    {{ staff_name[:1]|upper }}
+                </div>
+
+                <div class="profile-details">
+                    <div class="profile-name">{{ staff_name }}</div>
+                    <div class="profile-role">Staff account</div>
+                </div>
+
+                <a
+                    href="{{ url_for('staff_logout_page') }}"
+                    class="btn btn-outline-secondary btn-sm ms-2"
+                >
+                    Logout
+                </a>
 
             </div>
 
-            <p class="text-secondary">
-                Review newly created policies and approve or reject
-                them before customers can register claims.
-            </p>
+        </header>
 
 
-            {% if pending_policies %}
+        <main class="page-content" id="overview">
+
+            <!-- Welcome -->
+            <section class="welcome-row">
+
+                <div>
+                    <h2 class="welcome-heading">
+                        Welcome, {{ staff_name }}!
+                    </h2>
+
+                    <p class="welcome-text">
+                        Review policies, manage submitted claims, and
+                        monitor the progress of insurance requests.
+                    </p>
+                </div>
+
+                <div class="date-label">
+                    Staff workspace
+                </div>
+
+            </section>
+
+
+            <!-- Summary cards -->
+            <section class="summary-grid" aria-label="Dashboard summary">
+
+                <div class="summary-card">
+                    <div class="summary-top">
+                        <div class="summary-label">
+                            Pending Policy Approvals
+                        </div>
+                        <div class="summary-icon orange">▤</div>
+                    </div>
+
+                    <div class="summary-number">
+                        {% if "Claims Approver" in staff_roles %}
+                            {{ pending_policies|length }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+
+                    <div class="summary-description">
+                        Policies waiting for an approver
+                    </div>
+                </div>
+
+
+                <div class="summary-card">
+                    <div class="summary-top">
+                        <div class="summary-label">
+                            Claims in Queue
+                        </div>
+                        <div class="summary-icon">▣</div>
+                    </div>
+
+                    <div class="summary-number">
+                        {{ claims|length }}
+                    </div>
+
+                    <div class="summary-description">
+                        Claims available in your staff queue
+                    </div>
+                </div>
+
+
+                <div class="summary-card">
+                    <div class="summary-top">
+                        <div class="summary-label">
+                            Assigned Roles
+                        </div>
+                        <div class="summary-icon purple">♙</div>
+                    </div>
+
+                    <div class="summary-number">
+                        {{ staff_roles|length }}
+                    </div>
+
+                    <div class="summary-description">
+                        Roles assigned to your account
+                    </div>
+                </div>
+
+
+                <div class="summary-card">
+                    <div class="summary-top">
+                        <div class="summary-label">
+                            Available Actions
+                        </div>
+                        <div class="summary-icon green">✓</div>
+                    </div>
+
+                    <div class="summary-number">
+                        {% if "Claims Approver" in staff_roles %}
+                            {{ pending_policies|length }}
+                        {% else %}
+                            {{ claims|length }}
+                        {% endif %}
+                    </div>
+
+                    <div class="summary-description">
+                        Items available for review in this workspace
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- Assigned roles -->
+            <section class="roles-area" id="assigned-roles">
+
+                <div class="roles-heading">Your Assigned Roles</div>
+
+                {% if staff_roles %}
+
+                    {% for role in staff_roles %}
+                        <span class="role-tag">{{ role }}</span>
+                    {% endfor %}
+
+                {% else %}
+
+                    <p class="text-danger mb-0">
+                        No roles are assigned to this account.
+                        Contact your system administrator.
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- Pending policy approvals -->
+            {% if "Claims Approver" in staff_roles %}
+
+            <section class="content-card" id="policy-approvals">
+
+                <div class="section-header">
+
+                    <h2 class="section-title">
+                        Pending Policy Approvals
+                    </h2>
+
+                    <span class="section-count warning">
+                        {{ pending_policies|length }} pending
+                    </span>
+
+                </div>
+
+                <p class="section-description">
+                    Review newly created policies and approve or reject
+                    them before customers can register claims.
+                </p>
+
+
+                {% if pending_policies %}
+
+                <div class="table-toolbar">
+
+                    <div class="text-secondary small">
+                        Review the policy information before taking action.
+                    </div>
+
+                    <input
+                        type="search"
+                        id="policySearch"
+                        class="table-search"
+                        placeholder="Search policies..."
+                        aria-label="Search pending policies"
+                    >
+
+                </div>
+
 
                 <div class="table-responsive">
 
-                    <table class="table table-bordered table-hover">
+                    <table class="table dashboard-table table-hover">
 
                         <thead>
-
                             <tr>
                                 <th>Policy Number</th>
                                 <th>Customer</th>
@@ -196,200 +987,132 @@
                                 <th>Policy Period</th>
                                 <th>Status</th>
                                 <th>Created At</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
-
                         </thead>
 
-
-                        <tbody>
+                        <tbody id="policyTableBody">
 
                             {% for policy in pending_policies %}
 
                             <tr>
 
-                                <!-- Policy Number -->
                                 <td>
                                     <span class="policy-number">
                                         {{ policy.policy_number }}
                                     </span>
                                 </td>
 
-
-                                <!-- Customer -->
                                 <td>
                                     <span class="customer-name">
                                         {{ policy.customer_name }}
                                     </span>
                                 </td>
 
+                                <td>{{ policy.account_id }}</td>
 
-                                <!-- Account ID -->
-                                <td>
-                                    {{ policy.account_id }}
-                                </td>
-
-
-                                <!-- Vehicle -->
                                 <td>
                                     <strong>
                                         {{ policy.registration_number }}
                                     </strong>
-
                                     <br>
-
-                                    <small class="text-secondary">
-                                        {{ policy.make }}
-                                        {{ policy.model }}
-                                    </small>
+                                    <span class="muted-small">
+                                        {{ policy.make }} {{ policy.model }}
+                                    </span>
                                 </td>
 
+                                <td>{{ policy.coverage_details }}</td>
 
-                                <!-- Coverage -->
                                 <td>
-                                    {{ policy.coverage_details }}
+                                    ₹{{ "%.2f"|format(policy.premium_amount) }}
                                 </td>
 
-
-                                <!-- Premium -->
                                 <td>
-                                    ₹{{ "%.2f"|format(
-                                        policy.premium_amount
-                                    ) }}
-                                </td>
-
-
-                                <!-- Policy Period -->
-                                <td>
-
-                                    <strong>
-                                        {{ policy.start_date }}
-                                    </strong>
-
+                                    <strong>{{ policy.start_date }}</strong>
                                     <br>
-
-                                    <small class="text-secondary">
-                                        to
-                                    </small>
-
+                                    <span class="muted-small">to</span>
                                     <br>
-
-                                    <strong>
-                                        {{ policy.expiry_date }}
-                                    </strong>
-
+                                    <strong>{{ policy.expiry_date }}</strong>
                                 </td>
 
-
-                                <!-- Status -->
                                 <td>
-                                    <span class="policy-status">
+                                    <span class="status-badge status-{{ policy.status|lower|replace('_', '-') }}">
                                         {{ policy.status }}
                                     </span>
                                 </td>
 
+                                <td>{{ policy.created_at }}</td>
 
-                                <!-- Created At -->
                                 <td>
-                                    {{ policy.created_at }}
-                                </td>
-
-
-                                <!-- Actions -->
-                                <td>
-
                                     <div class="action-buttons">
 
-                                        <!-- View -->
                                         <a
-                                            href="{{
-                                                url_for(
-                                                    'staff_policy_details_page',
-                                                    policy_id=policy.policy_id
-                                                )
-                                            }}"
-                                            class="btn btn-sm btn-primary mb-1"
+                                            href="{{ url_for(
+                                                'staff_policy_details_page',
+                                                policy_id=policy.policy_id
+                                            ) }}"
+                                            class="btn btn-primary btn-sm"
                                         >
                                             View
                                         </a>
 
-
-                                        <!-- Approve -->
                                         <form
-    method="POST"
-    action="{{
-        url_for(
-            'policy_decision_route',
-            policy_id=policy.policy_id
-        )
-    }}"
-    class="mb-1"
->
-    <input
-        type="hidden"
-        name="csrf_token"
-        value="{{ csrf_token() }}"
-    >
+                                            method="POST"
+                                            action="{{ url_for(
+                                                'policy_decision_route',
+                                                policy_id=policy.policy_id
+                                            ) }}"
+                                            onsubmit="return confirm('Are you sure you want to approve this policy?');"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
 
-    <input
-        type="hidden"
-        name="decision"
-        value="approve"
-    >
+                                            <input
+                                                type="hidden"
+                                                name="decision"
+                                                value="approve"
+                                            >
 
                                             <button
                                                 type="submit"
-                                                class="btn btn-sm btn-success"
-                                                onclick="
-                                                    return confirm(
-                                                        'Are you sure you want to approve this policy?'
-                                                    );
-                                                "
+                                                class="btn btn-success btn-sm"
                                             >
                                                 Approve
                                             </button>
-
                                         </form>
 
-
-                                        <!-- Reject -->
                                         <form
-    method="POST"
-    action="{{
-        url_for(
-            'policy_decision_route',
-            policy_id=policy.policy_id
-        )
-    }}"
->
-    <input
-        type="hidden"
-        name="csrf_token"
-        value="{{ csrf_token() }}"
-    >
+                                            method="POST"
+                                            action="{{ url_for(
+                                                'policy_decision_route',
+                                                policy_id=policy.policy_id
+                                            ) }}"
+                                            onsubmit="return confirm('Are you sure you want to reject this policy?');"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
 
-    <input
-        type="hidden"
-        name="decision"
-        value="reject"
-    >
+                                            <input
+                                                type="hidden"
+                                                name="decision"
+                                                value="reject"
+                                            >
 
                                             <button
                                                 type="submit"
-                                                class="btn btn-sm btn-danger"
-                                                onclick="
-                                                    return confirm(
-                                                        'Are you sure you want to reject this policy?'
-                                                    );
-                                                "
+                                                class="btn btn-danger btn-sm"
                                             >
                                                 Reject
                                             </button>
-
                                         </form>
 
                                     </div>
-
                                 </td>
 
                             </tr>
@@ -402,140 +1125,157 @@
 
                 </div>
 
-            {% else %}
-
-                <div class="alert alert-success mb-0">
-
-                    <strong>No pending policies.</strong>
-
-                    There are currently no policies waiting for
-                    approval.
-
+                <div id="policyNoResults" class="empty-state mt-3" hidden>
+                    No policies match your search.
                 </div>
+
+                {% else %}
+
+                <div class="empty-state">
+                    <strong>No pending policies</strong>
+                    There are currently no policies waiting for approval.
+                </div>
+
+                {% endif %}
+
+            </section>
 
             {% endif %}
 
-        </div>
 
-        {% endif %}
+            <!-- Claims queue -->
+            <section class="content-card" id="claims-queue">
 
+                <div class="section-header">
 
-        <!-- =====================================================
-             CLAIMS QUEUE
-             ===================================================== -->
+                    <h2 class="section-title">Claims Queue</h2>
 
-        <div class="dashboard-card">
+                    <span class="section-count">
+                        {{ claims|length }} claim(s)
+                    </span>
 
-            <div class="d-flex justify-content-between
-                        align-items-center mb-3">
+                </div>
 
-                <h4 class="mb-0">
-                    Claims Queue
-                </h4>
-
-                <span class="badge text-bg-primary">
-                    {{ claims|length }} claim(s)
-                </span>
-
-            </div>
+                <p class="section-description">
+                    View submitted claims and check their current status
+                    and fraud-risk level.
+                </p>
 
 
-            {% if claims %}
+                {% if claims %}
+                
+<div class="table-toolbar">
+
+    <div class="text-secondary small">
+        Search claims or filter by status and fraud risk.
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+
+        <input
+            type="search"
+            id="claimSearch"
+            class="table-search"
+            placeholder="Search claims..."
+            aria-label="Search claims"
+        >
+
+        <select
+            id="claimStatusFilter"
+            class="table-search"
+            aria-label="Filter claims by status"
+        >
+            <option value="">All statuses</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="UNDER_REVIEW">Under Review</option>
+            <option value="DOCUMENT_VERIFICATION">Document Verification</option>
+            <option value="ASSESSMENT">Assessment</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+            <option value="SETTLEMENT_PENDING">Settlement Pending</option>
+            <option value="SETTLED">Settled</option>
+        </select>
+
+        <select
+            id="claimRiskFilter"
+            class="table-search"
+            aria-label="Filter claims by fraud risk"
+        >
+            <option value="">All risk levels</option>
+            <option value="LOW">Low Risk</option>
+            <option value="MEDIUM">Medium Risk</option>
+            <option value="HIGH">High Risk</option>
+            <option value="CRITICAL">Critical Risk</option>
+        </select>
+
+    </div>
+
+</div>
+
+
+
 
                 <div class="table-responsive">
 
-                    <table class="table table-bordered table-hover">
+                    <table class="table dashboard-table table-hover">
 
                         <thead>
-
                             <tr>
-
                                 <th>Claim Number</th>
-
                                 <th>Policy Number</th>
-
                                 <th>Incident Date</th>
-
                                 <th>Claimed Amount</th>
-
                                 <th>Status</th>
-
                                 <th>Fraud Risk</th>
-
                                 <th>Submitted At</th>
-
                                 <th>Action</th>
-
                             </tr>
-
                         </thead>
 
-
-                        <tbody>
+                        <tbody id="claimTableBody">
 
                             {% for claim in claims %}
 
                             <tr>
 
-                                <!-- Claim Number -->
                                 <td>
-                                    {{ claim.claim_number }}
+                                    <span class="claim-number">
+                                        {{ claim.claim_number }}
+                                    </span>
                                 </td>
 
+                                <td>{{ claim.policy_number }}</td>
 
-                                <!-- Policy Number -->
+                                <td>{{ claim.incident_date }}</td>
+
                                 <td>
-                                    {{ claim.policy_number }}
+                                    ₹{{ "%.2f"|format(claim.claimed_amount) }}
                                 </td>
 
-
-                                <!-- Incident Date -->
                                 <td>
-                                    {{ claim.incident_date }}
+                                    <span class="status-badge status-{{ claim.status|lower|replace('_', '-') }}">
+                                        {{ claim.status }}
+                                    </span>
                                 </td>
 
-
-                                <!-- Claimed Amount -->
                                 <td>
-                                    ₹{{ "%.2f"|format(
-                                        claim.claimed_amount
-                                    ) }}
+                                    <span class="status-badge risk-{{ claim.fraud_risk_level|lower|replace('_', '-') }}">
+                                        {{ claim.fraud_risk_level }}
+                                    </span>
                                 </td>
 
+                                <td>{{ claim.created_at }}</td>
 
-                                <!-- Status -->
-                                <td class="status">
-                                    {{ claim.status }}
-                                </td>
-
-
-                                <!-- Fraud Risk -->
                                 <td>
-                                    {{ claim.fraud_risk_level }}
-                                </td>
-
-
-                                <!-- Submitted At -->
-                                <td>
-                                    {{ claim.created_at }}
-                                </td>
-
-
-                                <!-- Action -->
-                                <td>
-
                                     <a
-                                        href="{{
-                                            url_for(
-                                                'staff_claim_details_page',
-                                                claim_id=claim.claim_id
-                                            )
-                                        }}"
-                                        class="btn btn-sm btn-primary"
+                                        href="{{ url_for(
+                                            'staff_claim_details_page',
+                                            claim_id=claim.claim_id
+                                        ) }}"
+                                        class="btn btn-primary btn-sm"
                                     >
                                         View Details
                                     </a>
-
                                 </td>
 
                             </tr>
@@ -548,25 +1288,143 @@
 
                 </div>
 
-            {% else %}
-
-                <div class="alert alert-info mb-0">
-
-                    No claims are currently available in the queue.
-
+                <div id="claimNoResults" class="empty-state mt-3" hidden>
+                    No claims match your search.
                 </div>
 
-            {% endif %}
+                {% else %}
 
-        </div>
+                <div class="empty-state">
+                    <strong>No claims available</strong>
+                    There are currently no claims available in the queue.
+                </div>
 
-    </main>
+                {% endif %}
+
+            </section>
 
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
+            <footer class="page-footer">
+                Insurance Claims Processing Workflow · Staff Portal
+            </footer>
+
+        </main>
+
+    </div>
+
+<script>
+    // Search and filter the claims table without changing database data.
+    function setupTableSearch(inputId, bodyId, noResultsId) {
+        const searchInput = document.getElementById(inputId);
+        const tableBody = document.getElementById(bodyId);
+        const noResults = document.getElementById(noResultsId);
+
+        if (!searchInput || !tableBody || !noResults) {
+            return;
+        }
+
+        const statusFilter =
+            document.getElementById("claimStatusFilter");
+
+        const riskFilter =
+            document.getElementById("claimRiskFilter");
+
+        function applyFilters() {
+            const query = searchInput.value.trim().toLowerCase();
+            const selectedStatus = statusFilter
+                ? statusFilter.value.toUpperCase()
+                : "";
+
+            const selectedRisk = riskFilter
+                ? riskFilter.value.toUpperCase()
+                : "";
+
+            const rows = Array.from(
+                tableBody.querySelectorAll("tr")
+            );
+
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const cells = row.querySelectorAll("td");
+
+                // Claims table columns:
+                // 0 = Claim Number, 4 = Status, 5 = Fraud Risk
+                const statusText = cells[4]
+                    ? cells[4].textContent.trim().toUpperCase()
+                    : "";
+
+                const riskText = cells[5]
+                    ? cells[5].textContent.trim().toUpperCase()
+                    : "";
+
+                const matchesSearch = row.textContent
+                    .toLowerCase()
+                    .includes(query);
+
+                const matchesStatus = !selectedStatus ||
+                    statusText === selectedStatus;
+
+                const matchesRisk = !selectedRisk ||
+                    riskText === selectedRisk;
+
+                const visible =
+                    matchesSearch && matchesStatus && matchesRisk;
+
+                row.hidden = !visible;
+
+                if (visible) {
+                    visibleCount += 1;
+                }
+            });
+
+            noResults.hidden = visibleCount !== 0;
+        }
+
+        searchInput.addEventListener("input", applyFilters);
+
+        if (statusFilter) {
+            statusFilter.addEventListener("change", applyFilters);
+        }
+
+        if (riskFilter) {
+            riskFilter.addEventListener("change", applyFilters);
+        }
+    }
+
+    // Search pending policies.
+    setupTableSearch(
+        "policySearch",
+        "policyTableBody",
+        "policyNoResults"
+    );
+
+    // Search and filter claims.
+    setupTableSearch(
+        "claimSearch",
+        "claimTableBody",
+        "claimNoResults"
+    );
+
+    // Highlight the sidebar link for the selected section.
+    document.querySelectorAll(".sidebar-link[href^='#']").forEach(
+        function (link) {
+            link.addEventListener("click", function () {
+                document.querySelectorAll(
+                    ".sidebar-link[href^='#']"
+                ).forEach(function (item) {
+                    item.classList.remove("active");
+                });
+
+                this.classList.add("active");
+            });
+        }
+    );
+</script>
+
+
+
+    
 
 </body>
 </html>
-

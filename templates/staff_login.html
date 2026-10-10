@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Login | Insurance Claims</title>
+    <title>Staff Login | SafeInsure</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -12,89 +12,380 @@
     >
 
     <style>
+        :root {
+            --navy: #173b70;
+            --blue: #2563eb;
+            --text: #243247;
+            --muted: #64748b;
+            --border: #dce4ef;
+            --background: #f3f6fb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #eef4fb;
             min-height: 100vh;
+            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: Arial, sans-serif;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 420px;
-            background: white;
             padding: 32px;
-            border-radius: 14px;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+            background: var(--background);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
         }
 
-        .login-title {
-            color: #174a7e;
+        .login-layout {
+            width: 100%;
+            max-width: 1120px;
+            min-height: 620px;
+            display: grid;
+            grid-template-columns: 1fr 0.85fr;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #fff;
+            box-shadow: 0 18px 55px rgba(25, 48, 80, 0.10);
+        }
+
+        .welcome-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px;
+            background:
+                radial-gradient(circle at 90% 15%, #e2ebff 0, transparent 32%),
+                linear-gradient(145deg, #f8faff, #edf3fb);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: var(--navy);
+            color: #fff;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .brand-name {
+            margin: 0;
+            color: var(--navy);
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .brand-tagline {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .welcome-content {
+            max-width: 440px;
+            margin: 50px 0;
+        }
+
+        .eyebrow {
+            margin-bottom: 15px;
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .welcome-content h1 {
+            margin-bottom: 18px;
+            color: var(--navy);
+            font-size: clamp(32px, 4vw, 43px);
+            font-weight: 800;
+            line-height: 1.18;
+            letter-spacing: -1px;
+        }
+
+        .welcome-content h2 {
+            margin-bottom: 15px;
+            color: #263951;
+            font-size: 21px;
             font-weight: 700;
+        }
+
+        .welcome-content p {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .access-note {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid #dbe6f6;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .access-note-icon {
+            color: var(--blue);
+            font-size: 23px;
+        }
+
+        .access-note strong {
+            display: block;
+            color: var(--navy);
+            font-size: 13px;
+        }
+
+        .access-note small {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .form-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 48px;
+        }
+
+        .form-heading {
+            margin-bottom: 8px;
+            color: var(--navy);
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .form-description {
+            margin-bottom: 32px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .form-label {
+            margin-bottom: 8px;
+            color: #374b65;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .form-control {
+            min-height: 48px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: #80aaff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        .btn-login {
+            min-height: 49px;
+            margin-top: 5px;
+            border: 0;
+            border-radius: 9px;
+            background: var(--blue);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            transition: background 0.2s ease;
+        }
+
+        .btn-login:hover {
+            background: #1d4ed8;
+            color: #fff;
+        }
+
+        .customer-link {
+            display: block;
+            margin-top: 25px;
+            color: var(--blue);
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .customer-link:hover {
+            text-decoration: underline;
+        }
+
+        .footer-note {
+            margin: 30px 0 0;
+            color: #94a3b8;
+            font-size: 11px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        @media (max-width: 850px) {
+            body {
+                padding: 18px;
+            }
+
+            .login-layout {
+                max-width: 520px;
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-panel {
+                padding: 30px;
+            }
+
+            .welcome-content {
+                margin: 35px 0 25px;
+            }
+
+            .welcome-content h1 {
+                font-size: 32px;
+            }
+
+            .welcome-content h2 {
+                font-size: 18px;
+            }
+
+            .form-panel {
+                padding: 32px 30px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 10px;
+            }
+
+            .welcome-panel,
+            .form-panel {
+                padding: 24px 20px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <main class="login-card">
-        <h2 class="login-title text-center mb-2">Staff Login</h2>
-        <p class="text-secondary text-center mb-4">
-            Insurance Claims Processing System
-        </p>
+    <main class="login-layout">
+        <section class="welcome-panel">
+            <header class="brand">
+                <div class="brand-icon" aria-hidden="true">S</div>
+                <div>
+                    <h1 class="brand-name">SafeInsure</h1>
+                    <p class="brand-tagline">Insurance made simpler</p>
+                </div>
+            </header>
 
-        {% if error_message %}
-            <div class="alert alert-danger" role="alert">
-                {{ error_message }}
+            <div class="welcome-content">
+                <div class="eyebrow">Staff workspace</div>
+
+                <h1>Your work.<br>Your control.</h1>
+
+                <h2>Welcome back to your workspace.</h2>
+
+                <p>
+                    Access assigned claims, review policies, assess damage,
+                    and manage claim decisions securely from one place.
+                </p>
+
+                <div class="access-note">
+                    <div class="access-note-icon" aria-hidden="true">
+                        &#128274;
+                    </div>
+                    <div>
+                        <strong>Secure staff access</strong>
+                        <small>For authorized insurance staff only.</small>
+                    </div>
+                </div>
             </div>
-        {% endif %}
 
-        <form method="POST" action="{{ url_for('staff_login_page') }}">
-            <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token() }}"
-            >
+            <div>
+                <p class="brand-tagline">
+                    SafeInsure Staff Portal
+                </p>
+            </div>
+        </section>
 
-            <div class="mb-3">
-                <label for="username" class="form-label">
-                    Username
-                </label>
+        <section class="form-panel">
+            <h2 class="form-heading">Staff sign in</h2>
+
+            <p class="form-description">
+                Enter your staff account details to continue to your
+                workspace.
+            </p>
+
+            {% if error_message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error_message }}
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('staff_login_page') }}">
                 <input
-                    type="text"
-                    class="form-control"
-                    id="username"
-                    name="username"
-                    autocomplete="username"
-                    required
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
                 >
-            </div>
 
-            <div class="mb-4">
-                <label for="password" class="form-label">
-                    Password
-                </label>
-                <input
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    name="password"
-                    autocomplete="current-password"
-                    required
-                >
-            </div>
+                <div class="mb-4">
+                    <label for="username" class="form-label">
+                        Username
+                    </label>
 
-            <button type="submit" class="btn btn-primary w-100">
-                Sign In
-            </button>
-        </form>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your staff username"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </div>
 
-        <div class="text-center mt-3">
-            <a href="{{ url_for('login_page') }}">
-                Customer Login
+                <div class="mb-4">
+                    <label for="password" class="form-label">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-login w-100">
+                    Sign in securely
+                </button>
+            </form>
+
+            <a class="customer-link" href="{{ url_for('login_page') }}">
+                ← Back to Customer Login
             </a>
-        </div>
+
+            <p class="footer-note">
+                SafeInsure Staff Portal<br>
+                For your security, use your own authorized staff account.
+            </p>
+        </section>
     </main>
 </body>
 </html>

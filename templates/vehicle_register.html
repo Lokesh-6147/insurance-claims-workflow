@@ -4,154 +4,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Vehicle | Insurance Claims</title>
+    <title>Register Vehicle | SafeInsure</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #eef4f8;
             margin: 0;
-            padding: 30px 15px;
-            color: #183b56;
+            min-height: 100vh;
+            padding: 30px 16px;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f6fc;
+            color: #183153;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .form-card {
-            background-color: white;
-            max-width: 520px;
-            margin: 20px auto;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        .container {
+            width: 100%;
+            max-width: 950px;
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 18px 50px rgba(25, 55, 95, 0.10);
         }
 
-        h1 {
+        .left-panel {
+            padding: 42px 34px;
+            background: linear-gradient(145deg, #0b3b78, #1675c9);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
             font-size: 25px;
-            text-align: center;
+            font-weight: 700;
+            margin-bottom: 38px;
+        }
+
+        .brand span {
+            color: #8dd7ff;
+        }
+
+        .left-panel h1 {
+            font-size: 31px;
+            line-height: 1.3;
+            margin: 0 0 16px;
+        }
+
+        .left-panel p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #e1efff;
+            margin: 0;
+        }
+
+        .benefits {
+            margin-top: 28px;
+            font-size: 14px;
+            line-height: 2.2;
+            color: #f1f7ff;
+        }
+
+        .form-panel {
+            padding: 42px;
+        }
+
+        .form-panel h2 {
+            margin: 0 0 10px;
+            font-size: 27px;
+            color: #17345b;
         }
 
         .description {
-            text-align: center;
-            color: #536575;
-            line-height: 1.5;
+            margin: 0 0 23px;
+            color: #687a92;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .error-message {
+            background: #fdecec;
+            color: #b42318;
+            border: 1px solid #f5b5b0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
         }
 
         label {
             display: block;
-            margin-top: 18px;
-            margin-bottom: 7px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            color: #344761;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         input {
-            box-sizing: border-box;
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5df;
-            border-radius: 6px;
+            padding: 13px 14px;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            background: #fbfdff;
+            color: #183153;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.18s ease,
+                        box-shadow 0.18s ease;
         }
 
-        button, .back-link {
-            display: inline-block;
-            margin-top: 24px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            background-color: #176b87;
-            color: white;
-            text-decoration: none;
-            cursor: pointer;
+        input:focus {
+            border-color: #2476cc;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(36, 118, 204, 0.12);
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #71829a;
         }
 
         button {
             width: 100%;
+            margin-top: 7px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #176bc0;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
         }
 
-        button:hover, .back-link:hover {
-            background-color: #10536b;
+        button:hover {
+            background: #0d529b;
         }
 
-        .error-message {
-            background-color: #fdecec;
-            color: #b42318;
-            border: 1px solid #f5b5b0;
+        .back-link {
+            display: block;
+            margin-top: 17px;
             padding: 12px;
-            border-radius: 6px;
-            margin-top: 15px;
+            border: 1px solid #d5e2f1;
+            border-radius: 8px;
+            text-align: center;
+            color: #176bc0;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .back-link:hover {
+            background: #f2f7fd;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .left-panel {
+                padding: 28px;
+            }
+
+            .brand {
+                margin-bottom: 22px;
+            }
+
+            .left-panel h1 {
+                font-size: 26px;
+            }
+
+            .benefits {
+                margin-top: 14px;
+            }
+
+            .form-panel {
+                padding: 30px 25px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="form-card">
-        <h1>Register Your Vehicle</h1>
+    <main class="container">
+        <section class="left-panel">
+            <div class="brand">Safe<span>Insure</span></div>
 
-        <p class="description">
-            Add your four-wheeler details to your insurance account.
-        </p>
+            <h1>Protect your vehicle with confidence.</h1>
 
-        {% if error_message %}
-            <div class="error-message" role="alert">
-                {{ error_message }}
+            <p>
+                Add your four-wheeler to your account to manage your
+                vehicle information and continue with your insurance journey.
+            </p>
+
+            <div class="benefits">
+                ✓ Keep vehicle details organized<br>
+                ✓ Connect vehicles with insurance policies<br>
+                ✓ Manage your insurance from one place
             </div>
-        {% endif %}
+        </section>
 
-        <form method="POST">
-            <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token() }}"
-            >
+        <section class="form-panel">
+            <h2>Register your vehicle</h2>
 
-            <label for="registration_number">
-                Vehicle Registration Number
-            </label>
-            <input
-                type="text"
-                id="registration_number"
-                name="registration_number"
-                maxlength="20"
-                placeholder="Example: AP05AB1234"
-                required
-            >
+            <p class="description">
+                Enter the details exactly as shown in your vehicle documents.
+            </p>
 
-            <label for="make">Vehicle Manufacturer</label>
-            <input
-                type="text"
-                id="make"
-                name="make"
-                maxlength="50"
-                placeholder="Example: Hyundai"
-                required
-            >
+            {% if error_message %}
+                <div class="error-message" role="alert">
+                    {{ error_message }}
+                </div>
+            {% endif %}
 
-            <label for="model">Vehicle Model</label>
-            <input
-                type="text"
-                id="model"
-                name="model"
-                maxlength="50"
-                placeholder="Example: Creta"
-                required
-            >
+            <form method="POST">
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
 
-            <label for="manufacturing_year">
-                Manufacturing Year (Optional)
-            </label>
-            <input
-                type="number"
-                id="manufacturing_year"
-                name="manufacturing_year"
-                min="1900"
-                max="2100"
-                placeholder="Example: 2023"
-            >
+                <div class="form-group">
+                    <label for="registration_number">
+                        Vehicle Registration Number
+                    </label>
+                    <input
+                        type="text"
+                        id="registration_number"
+                        name="registration_number"
+                        maxlength="20"
+                        placeholder="Example: AP05AB1234"
+                        autocomplete="off"
+                        required
+                    >
+                </div>
 
-            <button type="submit">Register Vehicle</button>
-        </form>
+                <div class="form-group">
+                    <label for="make">Vehicle Manufacturer</label>
+                    <input
+                        type="text"
+                        id="make"
+                        name="make"
+                        maxlength="50"
+                        placeholder="Example: Hyundai"
+                        required
+                    >
+                </div>
 
-        <a class="back-link" href="/dashboard">
-            Back to Dashboard
-        </a>
-    </div>
+                <div class="form-group">
+                    <label for="model">Vehicle Model</label>
+                    <input
+                        type="text"
+                        id="model"
+                        name="model"
+                        maxlength="50"
+                        placeholder="Example: Creta"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="manufacturing_year">
+                        Manufacturing Year (Optional)
+                    </label>
+                    <input
+                        type="number"
+                        id="manufacturing_year"
+                        name="manufacturing_year"
+                        min="1900"
+                        max="2100"
+                        placeholder="Example: 2023"
+                    >
+                    <span class="help-text">
+                        Leave blank if the manufacturing year is unavailable.
+                    </span>
+                </div>
+
+                <button type="submit">Register Vehicle</button>
+            </form>
+
+            <a class="back-link" href="/dashboard">
+                ← Back to Dashboard
+            </a>
+        </section>
+    </main>
 </body>
 </html>

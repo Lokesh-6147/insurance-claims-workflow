@@ -4,63 +4,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claim Details</title>
+    <title>Claim Details | SafeInsure</title>
 
     <style>
         * {
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #1769aa;
+            --primary-dark: #124c80;
+            --background: #f3f7fc;
+            --border: #dfe8f2;
+            --text: #26364a;
+            --muted: #65758b;
+            --white: #ffffff;
+        }
+
         body {
             margin: 0;
-            padding: 30px 16px;
+            padding: 0;
             font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #243247;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
         }
 
-        .container {
-            max-width: 850px;
+        .topbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+        }
+
+        .topbar-inner {
+            max-width: 1100px;
             margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
         }
 
-        h1 {
-            margin-top: 0;
-            color: #245b91;
+        .brand {
+            color: var(--primary-dark);
+            font-size: 23px;
+            font-weight: 700;
+            text-decoration: none;
         }
 
-        .claim-number {
-            color: #52657a;
+        .brand span {
+            color: var(--primary);
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
             margin-bottom: 24px;
         }
 
-        .details {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 20px;
+        .welcome h1 {
+            margin: 0 0 6px;
+            color: var(--primary-dark);
+            font-size: 29px;
         }
 
-        .detail-item {
-            padding: 15px;
-            background: #f7faff;
-            border: 1px solid #e1eaf4;
-            border-radius: 8px;
+        .welcome p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 18px rgba(29, 65, 105, 0.05);
+        }
+
+        .claim-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .claim-heading h2,
+        .section-title {
+            color: var(--primary-dark);
+            margin: 0 0 6px;
+        }
+
+        .claim-number {
+            color: var(--muted);
             overflow-wrap: anywhere;
-        }
-
-        .detail-item strong {
-            display: block;
-            margin-bottom: 8px;
-            color: #52657a;
-            font-size: 14px;
-        }
-
-        .description {
-            grid-column: 1 / -1;
         }
 
         .status {
@@ -69,30 +112,186 @@
             border-radius: 20px;
             background: #e0f2fe;
             color: #075985;
-            font-weight: bold;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            min-width: 0;
+            padding: 16px;
+            background: #f7faff;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .description {
+            grid-column: 1 / -1;
+            white-space: pre-wrap;
+        }
+
+        .section-title {
+            font-size: 21px;
+            margin-bottom: 5px;
+        }
+
+        .section-description {
+            color: var(--muted);
+            margin-top: 0;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd8e6;
+            border-radius: 7px;
+            background: var(--white);
+            color: var(--text);
+            font: inherit;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            background: #f8fbff;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid #bfdbfe;
+            border-color: var(--primary);
+        }
+
+        .hint {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .button {
+            display: inline-block;
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 17px;
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .button:hover {
+            background: var(--primary-dark);
+        }
+
+        .button.secondary {
+            background: #e8eef5;
+            color: #334155;
+        }
+
+        .button.secondary:hover {
+            background: #d8e2ee;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 520px;
+        }
+
+        th,
+        td {
+            padding: 13px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #f4f8fd;
+            color: #475b73;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-state {
+            padding: 18px;
+            border: 1px dashed #cbd8e6;
+            border-radius: 8px;
+            background: #f8fbff;
+            color: var(--muted);
         }
 
         .actions {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-top: 28px;
+            margin: 24px 0 36px;
         }
 
-        .button {
-            display: inline-block;
-            padding: 11px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            background: #245b91;
-            color: white;
+        footer {
+            padding: 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
         }
 
-        .button.secondary {
-            background: #64748b;
-        }
+        @media (max-width: 650px) {
+            .topbar {
+                padding: 14px 18px;
+            }
 
-        @media (max-width: 600px) {
+            .page {
+                margin-top: 22px;
+                padding: 0 14px;
+            }
+
+            .welcome h1 {
+                font-size: 25px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
             .details {
                 grid-template-columns: 1fr;
             }
@@ -101,175 +300,174 @@
                 grid-column: auto;
             }
 
-            .container {
-                padding: 20px;
+            .actions .button {
+                width: 100%;
             }
         }
     </style>
 </head>
 
 <body>
-    <main class="container">
-        <h1>Claim Details</h1>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="{{ url_for('customer_dashboard') }}">
+                Safe<span>Insure</span>
+            </a>
+            <span>Customer Portal</span>
+        </div>
+    </header>
 
-        <p>
-            Welcome, {{ customer_name }}.
-            Here is the information for your insurance claim.
-        </p>
+    <main class="page">
+        <div class="welcome">
+            <h1>Claim Details</h1>
+            <p>
+                Welcome, {{ customer_name }}. View your claim progress
+                and manage your supporting documents below.
+            </p>
+        </div>
 
-        <p class="claim-number">
-            Claim Number: <strong>{{ claim.claim_number }}</strong>
-        </p>
+        <section class="card">
+            <div class="claim-heading">
+                <div>
+                    <h2>Claim Summary</h2>
+                    <div class="claim-number">
+                        Claim Number:
+                        <strong>{{ claim.claim_number }}</strong>
+                    </div>
+                </div>
 
-        <div class="details">
-            <div class="detail-item">
-                <strong>Policy Number</strong>
-                {{ claim.policy_number }}
-            </div>
-
-            <div class="detail-item">
-                <strong>Claim Status</strong>
                 <span class="status">{{ claim.status }}</span>
             </div>
 
-            <div class="detail-item">
-                <strong>Incident Date</strong>
-                {{ claim.incident_date }}
+            <div class="details">
+                <div class="detail-item">
+                    <strong>Policy Number</strong>
+                    {{ claim.policy_number }}
+                </div>
+
+                <div class="detail-item">
+                    <strong>Incident Date</strong>
+                    {{ claim.incident_date }}
+                </div>
+
+                <div class="detail-item">
+                    <strong>Claimed Amount</strong>
+                    ₹{{ "%.2f"|format(claim.claimed_amount) }}
+                </div>
+
+                <div class="detail-item">
+                    <strong>Fraud Risk Level</strong>
+                    {{ claim.fraud_risk_level or "Not assessed yet" }}
+                </div>
+
+                <div class="detail-item">
+                    <strong>SLA Deadline</strong>
+                    {{ claim.sla_deadline or "Not assigned yet" }}
+                </div>
+
+                <div class="detail-item">
+                    <strong>Submitted At</strong>
+                    {{ claim.created_at }}
+                </div>
+
+                <div class="detail-item">
+                    <strong>Last Updated</strong>
+                    {{ claim.updated_at or "Not updated yet" }}
+                </div>
+
+                <div class="detail-item description">
+                    <strong>Incident Description</strong>
+                    {{ claim.incident_description }}
+                </div>
             </div>
+        </section>
 
-            <div class="detail-item">
-                <strong>Claimed Amount</strong>
-                ₹{{ "%.2f"|format(claim.claimed_amount) }}
-            </div>
+        <section class="card">
+            <h2 class="section-title">Upload Supporting Documents</h2>
+            <p class="section-description">
+                Submit documents related to your claim. Accepted formats:
+                PDF, JPG, JPEG, and PNG. Maximum request size: 5 MB.
+            </p>
 
-            <div class="detail-item description">
-                <strong>Incident Description</strong>
-                {{ claim.incident_description }}
-            </div>
-
-            <div class="detail-item">
-                <strong>Fraud Risk Level</strong>
-                {{ claim.fraud_risk_level or "Not assessed yet" }}
-            </div>
-
-            <div class="detail-item">
-                <strong>SLA Deadline</strong>
-                {{ claim.sla_deadline or "Not assigned yet" }}
-            </div>
-
-            <div class="detail-item">
-                <strong>Submitted At</strong>
-                {{ claim.created_at }}
-            </div>
-
-            <div class="detail-item">
-                <strong>Last Updated</strong>
-                {{ claim.updated_at or "Not updated yet" }}
-            </div>
-        </div>
-        
-<section style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e1eaf4;">
-    <h2>Upload Supporting Documents</h2>
-
-    <p>
-        Upload a document related to this insurance claim.
-        Accepted formats: PDF, JPG, JPEG, and PNG.
-        Maximum request size: 5 MB.
-    </p>
-
-    <form
-        action="{{ url_for('upload_claim_document_page', claim_id=claim.claim_id) }}"
-        method="POST"
-        enctype="multipart/form-data"
-    >
-        <input
-            type="hidden"
-            name="csrf_token"
-            value="{{ csrf_token() }}"
-        >
-
-        <div style="margin-bottom: 16px;">
-            <label for="document_type">
-                <strong>Document Type</strong>
-            </label>
-
-            <select
-                id="document_type"
-                name="document_type"
-                required
-                style="display: block; margin-top: 8px; padding: 10px; width: 100%; max-width: 400px;"
+            <form
+                action="{{ url_for('upload_claim_document_page', claim_id=claim.claim_id) }}"
+                method="POST"
+                enctype="multipart/form-data"
             >
-                <option value="">Select document type</option>
-                <option value="ACCIDENT_PHOTO">Accident Photo</option>
-                <option value="REPAIR_ESTIMATE">Repair Estimate</option>
-                <option value="POLICE_REPORT">Police Report</option>
-                <option value="OTHER">Other</option>
-            </select>
-        </div>
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
 
-        <div style="margin-bottom: 16px;">
-            <label for="document">
-                <strong>Select File</strong>
-            </label>
+                <div class="form-group">
+                    <label for="document_type">Document Type</label>
+                    <select id="document_type" name="document_type" required>
+                        <option value="">Select document type</option>
+                        <option value="ACCIDENT_PHOTO">Accident Photo</option>
+                        <option value="REPAIR_ESTIMATE">Repair Estimate</option>
+                        <option value="POLICE_REPORT">Police Report</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
 
-            <input
-                type="file"
-                id="document"
-                name="document"
-                accept=".pdf,.jpg,.jpeg,.png"
-                required
-                style="display: block; margin-top: 8px;"
-            >
-        </div>
+                <div class="form-group">
+                    <label for="document">Select File</label>
+                    <input
+                        type="file"
+                        id="document"
+                        name="document"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        required
+                    >
+                    <span class="hint">
+                        Choose a supported file from your device.
+                    </span>
+                </div>
 
-        <button type="submit" class="button">
-            Upload Document
-        </button>
-    </form>
-    
-<div style="margin-top: 25px;">
-    <h2>Uploaded Documents</h2>
+                <button type="submit" class="button">
+                    Upload Document
+                </button>
+            </form>
+        </section>
 
-    {% if documents %}
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e1eaf4;">
-                            Document Type
-                        </th>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e1eaf4;">
-                            Uploaded At
-                        </th>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e1eaf4;">
-                            Review Status
-                        </th>
-                    </tr>
-                </thead>
+        <section class="card">
+            <h2 class="section-title">Uploaded Documents</h2>
+            <p class="section-description">
+                Review the documents you have submitted for this claim.
+            </p>
 
-                <tbody>
-                    {% for document in documents %}
-                    <tr>
-                        <td style="padding: 12px; border-bottom: 1px solid #e1eaf4;">
-                            {{ document.document_type.replace('_', ' ').title() }}
-                        </td>
-                        <td style="padding: 12px; border-bottom: 1px solid #e1eaf4;">
-                            {{ document.uploaded_at }}
-                        </td>
-                        <td style="padding: 12px; border-bottom: 1px solid #e1eaf4;">
-                            {{ document.verification_status.replace('_', ' ').title() }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <p>No documents have been uploaded for this claim yet.</p>
-    {% endif %}
-</div>
-</section>
-</section>
+            {% if documents %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Document Type</th>
+                                <th>Uploaded At</th>
+                                <th>Review Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for document in documents %}
+                                <tr>
+                                    <td>
+                                        {{ document.document_type.replace('_', ' ').title() }}
+                                    </td>
+                                    <td>{{ document.uploaded_at }}</td>
+                                    <td>
+                                        {{ document.verification_status.replace('_', ' ').title() }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    No documents have been uploaded for this claim yet.
+                </div>
+            {% endif %}
+        </section>
 
         <div class="actions">
             <a class="button" href="{{ url_for('customer_dashboard') }}">
@@ -282,5 +480,9 @@
             </a>
         </div>
     </main>
+
+    <footer>
+        SafeInsure · Insurance Claims Processing
+    </footer>
 </body>
 </html>

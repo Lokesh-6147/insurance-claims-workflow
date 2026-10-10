@@ -390,7 +390,7 @@ def get_staff_claim_details(claim_id):
         WHERE c.claim_id = %s;
     """
 
-    connection = conn or get_db_connection()
+    connection = get_db_connection()
 
     with connection.cursor() as cur:
         cur.execute(query, (claim_id,))

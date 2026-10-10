@@ -1668,12 +1668,9 @@ def claim_registration_page():
                     ),
                 )
 
-                return (
-                    "Claim registered successfully! "
-                    f"Claim number: "
-                    f"{claim['claim_number']} "
-                    f"Status: "
-                    f"{claim['status']}"
+                return render_template(
+                    "claim_success.html",
+                    claim=claim,
                 ), 201
 
             except (

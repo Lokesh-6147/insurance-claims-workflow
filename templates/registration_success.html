@@ -1,75 +1,689 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Successful | Insurance Claims</title>
+    <title>Registration Successful | ClaimOS</title>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #eef4f8;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        * {
+            box-sizing: border-box;
         }
 
-        .success-card {
-            background-color: white;
-            width: 90%;
-            max-width: 480px;
-            padding: 35px;
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f8faff;
+            color: #16345b;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 230px 1fr;
+            grid-template-rows: 76px 1fr;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            background: linear-gradient(180deg, #102a49, #0b203a);
+            color: white;
+            padding: 25px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 6px 25px;
+            border-bottom: 1px solid #29435e;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
             border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: #2878f0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .brand-name {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .brand-subtitle {
+            margin-top: 5px;
+            color: #b8c9df;
+            font-size: 11px;
+        }
+
+        .nav-title {
+            margin: 28px 8px 12px;
+            color: #9db5d3;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 7px;
+            color: #e1eafa;
+            text-decoration: none;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .nav-item.active {
+            background: #1b416e;
+            border-left: 3px solid #438bff;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px 8px 0;
+            border-top: 1px solid #29435e;
+            color: #c0cee0;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* Header */
+        .topbar {
+            grid-column: 2;
+            grid-row: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 30px;
+            background: white;
+            border-bottom: 1px solid #e2e9f3;
+        }
+
+        .topbar h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .topbar p {
+            margin: 5px 0 0;
+            color: #7184a0;
+            font-size: 13px;
+        }
+
+        .account {
+            color: #425c7d;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        /* Main split layout */
+        .main {
+            grid-column: 2;
+            grid-row: 2;
+            display: grid;
+            grid-template-columns: minmax(300px, 0.95fr) minmax(390px, 1.05fr);
+            min-height: calc(100vh - 76px);
+        }
+
+        /* Left illustration panel */
+        .illustration-panel {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 35px;
+            background:
+                radial-gradient(circle at 30% 25%, #24518c 0, transparent 40%),
+                linear-gradient(145deg, #183e70, #0e2b51);
+        }
+
+        .illustration-content {
+            width: 100%;
+            max-width: 460px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 1;
+        }
+
+        .illustration-content h3 {
+            color: white;
+            font-size: 25px;
+            line-height: 1.4;
+            margin: 22px 0 10px;
+        }
+
+        .illustration-content > p {
+            color: #c4d9f6;
+            font-size: 14px;
+            line-height: 1.8;
+            margin: 0 auto;
+            max-width: 360px;
+        }
+
+        .artboard {
+            width: 100%;
+            max-width: 390px;
+            margin: 0 auto;
+            aspect-ratio: 1 / 0.88;
+            position: relative;
+        }
+
+        .document {
+            position: absolute;
+            background: #f7fbff;
+            border-radius: 12px;
+            box-shadow: 0 16px 35px #061a3670;
+            padding: 20px;
+        }
+
+        .document.policy {
+            width: 56%;
+            height: 58%;
+            top: 6%;
+            left: 6%;
+            transform: rotate(-4deg);
+        }
+
+        .document.details {
+            width: 42%;
+            height: 47%;
+            top: 17%;
+            right: 3%;
+            transform: rotate(4deg);
+        }
+
+        .doc-top {
+            height: 8px;
+            border-radius: 5px;
+            background: #3b82f6;
+            margin: -20px -20px 20px;
+        }
+
+        .doc-heading {
+            color: #24558f;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 17px;
+        }
+
+        .doc-line {
+            height: 8px;
+            border-radius: 8px;
+            background: #c7ddfb;
+            margin: 11px 0;
+        }
+
+        .doc-line.short {
+            width: 60%;
+        }
+
+        .doc-line.medium {
+            width: 80%;
+        }
+
+        .mini-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: #3981eb;
+            font-size: 17px;
+            margin-bottom: 12px;
+        }
+
+        .car {
+            position: absolute;
+            left: 8%;
+            bottom: 4%;
+            width: 84%;
+            height: 35%;
+            filter: drop-shadow(0 15px 10px #061b3470);
+        }
+
+        .car-body {
+            position: absolute;
+            left: 3%;
+            bottom: 12%;
+            width: 94%;
+            height: 53%;
+            border-radius: 48% 28% 17% 17%;
+            background: linear-gradient(145deg, #79c4ff, #2478e6 70%);
+            border: 2px solid #a6d8ff;
+        }
+
+        .car-window {
+            position: absolute;
+            left: 25%;
+            bottom: 55%;
+            width: 49%;
+            height: 37%;
+            background: linear-gradient(135deg, #c6e8ff, #3978b8);
+            clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
+            border: 2px solid #c5e6ff;
+        }
+
+        .car-light {
+            position: absolute;
+            right: 5%;
+            bottom: 35%;
+            width: 10%;
+            height: 9%;
+            border-radius: 8px;
+            background: #fff7c7;
+        }
+
+        .wheel {
+            position: absolute;
+            bottom: 0;
+            width: 19%;
+            aspect-ratio: 1;
+            border: 7px solid #b8d9f5;
+            background: #18344e;
+            border-radius: 50%;
+            box-shadow: inset 0 0 0 5px #53718d;
+        }
+
+        .wheel.left {
+            left: 17%;
+        }
+
+        .wheel.right {
+            right: 15%;
+        }
+
+        .shield {
+            position: absolute;
+            z-index: 2;
+            left: 29%;
+            bottom: 0;
+            width: 31%;
+            height: 39%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(150deg, #48d8b1, #159d93);
+            clip-path: polygon(50% 0, 95% 16%, 88% 67%, 50% 100%, 12% 67%, 5% 16%);
+            border: 2px solid #b6fff0;
+            filter: drop-shadow(0 10px 15px #071e3e80);
+        }
+
+        .artboard::before,
+        .artboard::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: #3d83d9;
+            opacity: 0.35;
+        }
+
+        .artboard::before {
+            width: 95px;
+            height: 95px;
+            top: 8%;
+            left: 0;
+        }
+
+        .artboard::after {
+            width: 65px;
+            height: 65px;
+            right: 0;
+            bottom: 13%;
+        }
+
+        /* Right success panel */
+        .success-panel {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 45px 35px;
+            background: #fff;
+        }
+
+        .success-panel::after {
+            content: "";
+            position: absolute;
+            width: 120%;
+            height: 115px;
+            left: -10%;
+            bottom: -75px;
+            background: #f0f6ff;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .success-content {
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
         }
 
         .success-icon {
-            color: #198754;
-            font-size: 52px;
+            width: 94px;
+            height: 94px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #35c486;
+            color: white;
+            font-size: 55px;
+            font-weight: bold;
+            box-shadow: 0 12px 30px #35c48630;
         }
 
-        h1 {
-            color: #183b56;
-            font-size: 26px;
+        .success-content h1 {
+            margin: 0 0 20px;
+            color: #15335d;
+            font-size: clamp(27px, 3vw, 38px);
+            line-height: 1.25;
         }
 
-        p {
-            color: #536575;
-            line-height: 1.6;
+        .description {
+            margin: 0 auto;
+            max-width: 460px;
+            color: #687f9f;
+            font-size: 16px;
+            line-height: 1.9;
+        }
+
+        .welcome-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 32px 0;
+            padding: 19px;
+            text-align: left;
+            border-radius: 13px;
+            background: #e8f8f1;
+        }
+
+        .welcome-icon {
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: #c9f1df;
+            color: #149765;
+            font-size: 24px;
+        }
+
+        .welcome-box strong {
+            display: block;
+            color: #159965;
+            margin-bottom: 6px;
+        }
+
+        .welcome-box span {
+            color: #637d91;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
         }
 
         .button {
-            display: inline-block;
-            margin-top: 18px;
-            padding: 12px 22px;
-            background-color: #176b87;
-            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 175px;
+            padding: 15px 22px;
+            border: 1px solid #2d79f5;
+            border-radius: 9px;
             text-decoration: none;
-            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s ease;
         }
 
-        .button:hover {
-            background-color: #10536b;
+        .button-primary {
+            color: white;
+            background: #2878f0;
+        }
+
+        .button-primary:hover {
+            background: #155fc9;
+            transform: translateY(-2px);
+        }
+
+        .button-secondary {
+            color: #2878f0;
+            background: white;
+        }
+
+        .button-secondary:hover {
+            background: #eff5ff;
+        }
+
+        @media (max-width: 1000px) {
+            .page {
+                grid-template-columns: 190px 1fr;
+            }
+
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .illustration-panel {
+                padding: 40px 25px;
+            }
+
+            .artboard {
+                max-width: 330px;
+            }
+
+            .success-panel {
+                padding: 50px 25px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .page {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                padding: 17px 20px;
+            }
+
+            .topbar h2 {
+                font-size: 17px;
+            }
+
+            .account {
+                font-size: 11px;
+            }
+
+            .illustration-panel {
+                padding: 35px 20px;
+            }
+
+            .illustration-content h3 {
+                font-size: 22px;
+            }
+
+            .artboard {
+                max-width: 300px;
+            }
+
+            .success-panel {
+                padding: 45px 20px 60px;
+            }
+
+            .success-icon {
+                width: 78px;
+                height: 78px;
+                font-size: 44px;
+            }
+
+            .description {
+                font-size: 14px;
+            }
+
+            .welcome-box {
+                margin: 25px 0;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="success-card">
-        <div class="success-icon" aria-hidden="true">&#10003;</div>
+<div class="page">
 
-        <h1>Registration Successful!</h1>
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">C</div>
+            <div>
+                <div class="brand-name">ClaimOS</div>
+                <div class="brand-subtitle">Insurance Claims Portal</div>
+            </div>
+        </div>
 
-        <p>
-            Your customer account has been created successfully.
-            You can now continue to the next step of your
-            insurance journey.
-        </p>
+        <div class="nav-title">WORKSPACE</div>
+        <a class="nav-item active" href="/">▦ &nbsp; Dashboard</a>
+        <a class="nav-item" href="/">▤ &nbsp; Policies</a>
+        <a class="nav-item" href="/">▣ &nbsp; Claims Management</a>
 
-        <a class="button" href="/register">Back to Registration</a>
-    </div>
+        <div class="nav-title">ACCOUNT</div>
+        <a class="nav-item" href="/register">↩ &nbsp; Register</a>
+
+        <div class="sidebar-footer">
+            <strong>Insurance Claims System</strong><br>
+            Customer Portal
+        </div>
+    </aside>
+
+    <header class="topbar">
+        <div>
+            <h2>Registration Success</h2>
+            <p>Insurance claims processing workspace</p>
+        </div>
+        <div class="account">Welcome to ClaimOS</div>
+    </header>
+
+    <main class="main">
+
+        <!-- Left-side insurance illustration -->
+        <section class="illustration-panel">
+            <div class="illustration-content">
+
+                <div class="artboard" aria-hidden="true">
+                    <div class="document policy">
+                        <div class="doc-top"></div>
+                        <div class="doc-heading">🛡 INSURANCE</div>
+                        <div class="doc-line"></div>
+                        <div class="doc-line"></div>
+                        <div class="doc-line medium"></div>
+                        <div class="doc-line short"></div>
+                    </div>
+
+                    <div class="document details">
+                        <div class="doc-top"></div>
+                        <div class="mini-icon">✓</div>
+                        <div class="doc-line medium"></div>
+                        <div class="doc-line short"></div>
+                        <div class="mini-icon">▤</div>
+                        <div class="doc-line medium"></div>
+                    </div>
+
+                    <div class="car">
+                        <div class="car-window"></div>
+                        <div class="car-body"></div>
+                        <div class="car-light"></div>
+                        <div class="wheel left"></div>
+                        <div class="wheel right"></div>
+                    </div>
+
+                    <div class="shield">✓</div>
+                </div>
+
+                <h3>Your insurance journey starts here</h3>
+                <p>
+                    Manage your policies, register claims, and track
+                    your insurance journey from one secure place.
+                </p>
+            </div>
+        </section>
+
+        <!-- Right-side success message -->
+        <section class="success-panel">
+            <div class="success-content">
+
+                <div class="success-icon" aria-hidden="true">&#10003;</div>
+
+                <h1>Registration Successful!</h1>
+
+                <p class="description">
+                    Your customer account has been created successfully.
+                    You can now log in to access your ClaimOS account
+                    and continue your insurance journey.
+                </p>
+
+                <div class="welcome-box">
+                    <div class="welcome-icon" aria-hidden="true">🛡</div>
+                    <div>
+                        <strong>You're all set!</strong>
+                        <span>Welcome to the ClaimOS family.</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <!-- Replace /login if your actual customer login URL differs -->
+                    <a class="button button-primary" href="/login">
+                        Go to Login <span aria-hidden="true">→</span>
+                    </a>
+
+                    <!-- Keep /register as the existing registration route -->
+                    <a class="button button-secondary" href="/register">
+                        Back to Registration
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+</div>
 </body>
 </html>

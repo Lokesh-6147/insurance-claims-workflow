@@ -4,68 +4,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Registration | Insurance Claims</title>
+    <title>Customer Registration | SafeInsure</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f6fc;
+            color: #183153;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 16px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            max-width: 1000px;
+            min-height: 620px;
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 18px 50px rgba(25, 55, 95, 0.12);
+        }
+
+        .left-panel {
+            background: linear-gradient(145deg, #0b3b78, #1675c9);
+            color: #ffffff;
+            padding: 55px 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: 700;
+            margin-bottom: 42px;
+            letter-spacing: 0.3px;
+        }
+
+        .brand span {
+            color: #8dd7ff;
+        }
+
+        .left-panel h1 {
+            font-size: 34px;
+            line-height: 1.25;
+            margin: 0 0 18px;
+        }
+
+        .left-panel p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #e1efff;
+            margin: 0;
+        }
+
+        .benefits {
+            margin-top: 32px;
+            line-height: 2.3;
+            font-size: 14px;
+            color: #f1f7ff;
+        }
+
+        .right-panel {
+            padding: 48px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-panel h2 {
+            font-size: 27px;
+            margin: 0 0 10px;
+            color: #17345b;
+        }
+
+        .subtitle {
+            color: #687a92;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0 0 24px;
+        }
+
         .error-message {
-            background-color: #fdecec;
+            background: #fdecec;
             color: #b42318;
             border: 1px solid #f5b5b0;
             padding: 12px;
-            margin: 15px 0;
-            border-radius: 6px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #344761;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            background: #fbfdff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.18s ease,
+                        box-shadow 0.18s ease,
+                        background 0.18s ease;
+        }
+
+        input:focus {
+            border-color: #2476cc;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(36, 118, 204, 0.12);
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 5px;
+            background: #176bc0;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background: #0d529b;
+        }
+
+        .footer {
+            margin-top: 23px;
+            text-align: center;
+            font-size: 14px;
+            color: #687a92;
+        }
+
+        .footer a {
+            color: #176bc0;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 760px) {
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 480px;
+            }
+
+            .left-panel {
+                padding: 30px;
+            }
+
+            .brand {
+                margin-bottom: 22px;
+            }
+
+            .left-panel h1 {
+                font-size: 27px;
+            }
+
+            .benefits {
+                margin-top: 16px;
+            }
+
+            .right-panel {
+                padding: 32px 26px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <h1>Insurance Claims Processing System</h1>
-    <h2>Create Your Customer Account</h2>
-    
-    {% if error_message %}
-        <div class="error-message" role="alert">
-            {{ error_message }}
-        </div>
-    {% endif %}
+    <main class="container">
+        <section class="left-panel">
+            <div class="brand">Safe<span>Insure</span></div>
 
-    <form method="POST">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <h1>Your protection journey starts here.</h1>
 
-        <label for="full_name">Full Name</label><br>
-        <input
-            type="text"
-            id="full_name"
-            name="full_name"
-            required
-        ><br><br>
+            <p>
+                Create your customer account to manage your vehicle insurance,
+                register claims, and follow your claim status in one place.
+            </p>
 
-        <label for="email">Email Address</label><br>
-        <input
-            type="email"
-            id="email"
-            name="email"
-            required
-        ><br><br>
+            <div class="benefits">
+                ✓ Secure customer account<br>
+                ✓ Manage policies and vehicles<br>
+                ✓ Track insurance claims
+            </div>
+        </section>
 
-        <label for="phone">Phone Number</label><br>
-        <input
-            type="tel"
-            id="phone"
-            name="phone"
-            pattern="[0-9]{10}"
-            maxlength="10"
-            required
-        ><br><br>
+        <section class="right-panel">
+            <h2>Create your account</h2>
 
-        <label for="password">Password</label><br>
-        <input
-            type="password"
-            id="password"
-            name="password"
-            minlength="8"
-            required
-        ><br><br>
+            <p class="subtitle">
+                Enter your details below to register with SafeInsure.
+            </p>
 
-        <button type="submit">Create Account</button>
-    </form>
+            {% if error_message %}
+                <div class="error-message" role="alert">
+                    {{ error_message }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        pattern="[0-9]{10}"
+                        maxlength="10"
+                        inputmode="numeric"
+                        autocomplete="tel"
+                        title="Enter a 10-digit phone number"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit">Create Account</button>
+            </form>
+
+            <div class="footer">
+                Already have an account?
+                <a href="{{ url_for('home') }}">Go to Home</a>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
