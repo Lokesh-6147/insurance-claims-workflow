@@ -1,4 +1,5 @@
 
+from contextlib import contextmanager
 import json
 import secrets
 from datetime import date
@@ -402,6 +403,18 @@ def get_staff_claim_details(claim_id):
         columns = [column.name for column in cur.description]
         return dict(zip(columns, row))
 
+
+
+@contextmanager
+def _assessment_connection(existing_connection=None):
+    """Reuse a supplied connection or manage a new one."""
+    if existing_connection is not None:
+        yield existing_connection
+    else:
+        with get_db_connection() as new_connection:
+            yield new_connection
+
+
 def create_claim_assessment(
     claim_id,
     assessor_id,
@@ -485,7 +498,7 @@ def create_claim_assessment(
     """
 
 
-    with get_db_connection() as conn:
+    with _assessment_connection(conn) as conn:
         with conn.cursor() as cur:
             # Lock the claim while the assessment is processed.
             cur.execute(
@@ -585,10 +598,10 @@ def create_claim_assessment(
                 )
 
                 # Complete the SLA for the previous stage.
-                complete_sla(claim_id, previous_status, connection)
+                complete_sla(claim_id, previous_status, conn)
 
                 # Start the SLA for the new stage.
-                start_sla(claim_id, new_status, connection)
+                start_sla(claim_id, new_status, conn)
 
     return assessment_id
 
