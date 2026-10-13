@@ -23,11 +23,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest-cov
 
       - name: Run tests
         env:
           FLASK_SECRET_KEY: test-secret-key-for-ci-only
-        run: pytest -q
+        run: pytest --cov=services --cov-report=term-missing -q
 
       - name: Build Docker image
         run: docker build -t insurance-claims-workflow .
