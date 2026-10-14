@@ -431,10 +431,10 @@ def create_claim_assessment(
         "MORE_INFORMATION_REQUIRED",
     }
 
-    if not isinstance(claim_id, int) or claim_id <= 0:
+    if isinstance(claim_id, bool) or not isinstance(claim_id, int) or claim_id <= 0:
         raise ValueError("Invalid claim ID.")
 
-    if not isinstance(assessor_id, int) or assessor_id <= 0:
+    if isinstance(assessor_id, bool) or not isinstance(assessor_id, int) or assessor_id <= 0:
         raise ValueError("Invalid assessor ID.")
 
     if not isinstance(damage_description, str) or not damage_description.strip():
@@ -666,10 +666,10 @@ def record_claim_decision(
     }
 
     # Validate input
-    if not isinstance(claim_id, int) or claim_id <= 0:
+    if isinstance(claim_id, bool) or not isinstance(claim_id, int) or claim_id <= 0:
         raise ValueError("Invalid claim ID.")
 
-    if not isinstance(approver_id, int) or approver_id <= 0:
+    if isinstance(approver_id, bool) or not isinstance(approver_id, int) or approver_id <= 0:
         raise ValueError("Invalid approver ID.")
 
     if decision not in allowed_decisions:

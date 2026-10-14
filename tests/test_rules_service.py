@@ -278,3 +278,98 @@ def test_resolve_fraud_flag_success(mock_connection, status):
     assert db.__enter__.return_value.execute.call_count == 2
     update_call = db.__enter__.return_value.execute.call_args
     assert update_call.args[1] == (2, "Reviewed and verified.", 1)
+from services.rules_service import evaluate_claim_rules
+
+
+@pytest.fixture
+def active_claim_rules():
+    return [
+        {
+            "rule_id": 1,
+            "rule_code": "AUTO_APPROVE_LIMIT",
+            "numeric_value": Decimal("50000"),
+        },
+        {
+            "rule_id": 2,
+            "rule_code": "SUPERVISOR_REVIEW_LIMIT",
+            "numeric_value": Decimal("100000"),
+        },
+        {
+            "rule_id": 3,
+            "rule_code": "EARLY_LOSS_DAYS",
+            "numeric_value": Decimal("30"),
+        },
+        {
+            "rule_id": 4,
+            "rule_code": "ANNUAL_CLAIM_COUNT",
+            "numeric_value": Decimal("3"),
+        },
+    ]
+
+
+@patch("services.rules_service.get_active_rules")
+@patch("services.rules_service.qualifies_for_auto_approval", return_value=True)
+@patch("services.rules_service.requires_supervisor_review", return_value=False)
+@patch("services.rules_service.is_early_loss", return_value=True)
+@patch("services.rules_service.count_claims_in_12_months", return_value=3)
+@patch("services.rules_service.has_annual_claim_threshold", return_value=True)
+def test_evaluate_claim_rules_with_fraud_flags(
+    mock_annual_threshold,
+    mock_claim_count,
+    mock_early_loss,
+    mock_supervisor,
+    mock_auto_approval,
+    mock_active_rules,
+    active_claim_rules,
+):
+    mock_active_rules.return_value = active_claim_rules
+
+    result = evaluate_claim_rules(
+        customer_id=10,
+        claimed_amount=Decimal("40000"),
+        policy_start_date=date(2026, 1, 1),
+        incident_date=date(2026, 1, 20),
+    )
+
+    assert result["auto_approval_eligible"] is True
+    assert result["supervisor_review_required"] is False
+    assert result["fraud_review_required"] is True
+    assert result["claim_count_12_months"] == 3
+    assert result["evaluated_rules"]["EARLY_LOSS_DAYS"] is True
+    assert result["evaluated_rules"]["ANNUAL_CLAIM_COUNT"] is True
+    assert {
+        flag["flag_type"] for flag in result["fraud_flags"]
+    } == {"EARLY_LOSS", "HIGH_CLAIM_FREQUENCY"}
+
+
+@patch("services.rules_service.get_active_rules")
+@patch("services.rules_service.qualifies_for_auto_approval", return_value=False)
+@patch("services.rules_service.requires_supervisor_review", return_value=True)
+@patch("services.rules_service.is_early_loss", return_value=False)
+@patch("services.rules_service.count_claims_in_12_months", return_value=1)
+@patch("services.rules_service.has_annual_claim_threshold", return_value=False)
+def test_evaluate_claim_rules_without_fraud_flags(
+    mock_annual_threshold,
+    mock_claim_count,
+    mock_early_loss,
+    mock_supervisor,
+    mock_auto_approval,
+    mock_active_rules,
+    active_claim_rules,
+):
+    mock_active_rules.return_value = active_claim_rules
+
+    result = evaluate_claim_rules(
+        customer_id=10,
+        claimed_amount=Decimal("150000"),
+        policy_start_date=date(2026, 1, 1),
+        incident_date=date(2026, 6, 1),
+    )
+
+    assert result["auto_approval_eligible"] is False
+    assert result["supervisor_review_required"] is True
+    assert result["fraud_review_required"] is False
+    assert result["fraud_flags"] == []
+    assert result["claim_count_12_months"] == 1
+    assert result["evaluated_rules"]["EARLY_LOSS_DAYS"] is False
+    assert result["evaluated_rules"]["ANNUAL_CLAIM_COUNT"] is False
