@@ -28,6 +28,7 @@ def publish_pending_events():
                 publish_claim_event(
                     event_type,
                     payload["claim"],
+                    event_id=event_id,
                 )
 
                 connection.execute(
