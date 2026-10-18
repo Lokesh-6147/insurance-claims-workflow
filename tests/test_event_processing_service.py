@@ -26,7 +26,7 @@ def test_start_event_processing_returns_true_for_new_or_retryable_event(
     assert result is True
     assert "INSERT INTO event_processing" in query
     assert "ON CONFLICT (event_id, consumer_name)" in query
-    assert "WHERE event_processing.processing_status <> 'COMPLETED'" in query
+    assert "WHERE event_processing.processing_status = 'FAILED'" in query
     assert "RETURNING event_id" in query
     assert params == (2, "claim_consumer")
 

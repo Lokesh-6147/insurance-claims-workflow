@@ -27,7 +27,7 @@ def start_event_processing(event_id, consumer_name):
                 received_at = CURRENT_TIMESTAMP,
                 processed_at = NULL,
                 last_error = NULL
-            WHERE event_processing.processing_status <> 'COMPLETED'
+            WHERE event_processing.processing_status = 'FAILED'
             RETURNING event_id
             """,
             (event_id, consumer_name),
