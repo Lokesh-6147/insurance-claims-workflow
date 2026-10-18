@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def publish_claim_event(event_type, claim):
+def publish_claim_event(event_type, claim, event_id=None):
     """Publish a claim event to RabbitMQ."""
 
     host = os.getenv("RABBITMQ_HOST", "localhost")
@@ -25,34 +25,39 @@ def publish_claim_event(event_type, claim):
     )
 
     connection = pika.BlockingConnection(parameters)
-    channel = connection.channel()
-    channel.confirm_delivery()
 
-    channel.queue_declare(
-        queue=queue,
-        durable=True,
-    )
+    try:
+        channel = connection.channel()
+        channel.confirm_delivery()
 
-    message = {
-        "event_type": event_type,
-        "claim": {
-            "claim_id": claim.get("claim_id"),
-            "claim_number": claim.get("claim_number"),
-            "policy_id": claim.get("policy_id"),
-            "incident_date": str(claim.get("incident_date")),
-            "claimed_amount": str(claim.get("claimed_amount")),
-            "status": claim.get("status"),
-        },
-    }
+        channel.queue_declare(
+            queue=queue,
+            durable=True,
+        )
 
-    channel.basic_publish(
-        exchange="",
-        routing_key=queue,
-        body=json.dumps(message),
-        properties=pika.BasicProperties(
-            delivery_mode=2,
-            content_type="application/json",
-        ),
-    )
+        message = {
+            "event_id": event_id,
+            "event_type": event_type,
+            "claim": {
+                "claim_id": claim.get("claim_id"),
+                "claim_number": claim.get("claim_number"),
+                "policy_id": claim.get("policy_id"),
+                "incident_date": str(claim.get("incident_date")),
+                "claimed_amount": str(claim.get("claimed_amount")),
+                "status": claim.get("status"),
+            },
+        }
 
-    connection.close()
+        channel.basic_publish(
+            exchange="",
+            routing_key=queue,
+            body=json.dumps(message),
+            properties=pika.BasicProperties(
+                delivery_mode=2,
+                content_type="application/json",
+            ),
+            mandatory=True,
+        )
+    finally:
+        if connection.is_open:
+            connection.close()
