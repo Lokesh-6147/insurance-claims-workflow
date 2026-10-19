@@ -6,6 +6,7 @@ import os
 import pika
 from dotenv import load_dotenv
 
+from services.claim_notification_handler import handle_claim_notification
 from services.event_processing_service import (
     complete_event_processing,
     fail_event_processing,
@@ -100,7 +101,8 @@ def process_message(ch, method, properties, body):
         print("\nReceived RabbitMQ event:")
         print(json.dumps(message, indent=2))
 
-        # Business actions such as notifications are not implemented yet.
+        # Track customer notifications before marking the event complete.
+        handle_claim_notification(message)
         complete_event_processing(event_id, CONSUMER_NAME)
         ch.basic_ack(delivery_tag=method.delivery_tag)
 

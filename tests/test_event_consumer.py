@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 import event_consumer
 
 
+
 def valid_message():
     return {
         "event_id": 7,
@@ -23,9 +24,13 @@ def properties(headers=None):
     )
 
 
+@patch("event_consumer.handle_claim_notification")
 @patch("event_consumer.complete_event_processing")
 @patch("event_consumer.start_event_processing")
-def test_success_completes_and_acknowledges(mock_start, mock_complete):
+def test_success_completes_and_acknowledges(
+    mock_start, mock_complete, mock_notification
+):
+    mock_notification.return_value = True
     channel = MagicMock()
     method = SimpleNamespace(delivery_tag=101)
 
