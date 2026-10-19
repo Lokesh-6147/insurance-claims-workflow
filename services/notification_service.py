@@ -113,3 +113,48 @@ def update_notification_delivery(notification_id, status, error=None):
         ).fetchone()
 
     return row[0] if row else None
+
+
+def claim_notification_delivery(event_id, recipient_email, notification_type):
+    """Claim a new delivery or reclaim a failed delivery for retry."""
+    if (
+        not isinstance(event_id, int)
+        or isinstance(event_id, bool)
+        or event_id <= 0
+    ):
+        raise ValueError("Event ID must be a positive integer.")
+
+    recipient_email = recipient_email.strip().lower()
+    notification_type = notification_type.strip()
+
+    if not recipient_email or len(recipient_email) > 254:
+        raise ValueError("A valid recipient email is required.")
+
+    if not notification_type or len(notification_type) > 100:
+        raise ValueError("A notification type of 1–100 characters is required.")
+
+    with get_db_connection() as connection:
+        row = connection.execute(
+            """
+            INSERT INTO notification_deliveries
+                (
+                    event_id,
+                    recipient_email,
+                    notification_type,
+                    delivery_status,
+                    attempt_count
+                )
+            VALUES (%s, %s, %s, 'SENDING', 1)
+            ON CONFLICT
+                (event_id, recipient_email, notification_type)
+            DO UPDATE SET
+                delivery_status = 'SENDING',
+                attempt_count = notification_deliveries.attempt_count + 1,
+                last_error = NULL
+            WHERE notification_deliveries.delivery_status = 'FAILED'
+            RETURNING notification_id
+            """,
+            (event_id, recipient_email, notification_type),
+        ).fetchone()
+
+    return row[0] if row else None

@@ -149,3 +149,38 @@ def test_update_notification_delivery_rejects_invalid_input(
             raise AssertionError(f"Expected ValueError for status={status!r}")
 
     mock_get_connection.assert_not_called()
+@patch("services.notification_service.get_db_connection")
+def test_claim_notification_delivery_claims_new_delivery(mock_get_connection):
+    from services.notification_service import claim_notification_delivery
+
+    connection = MagicMock()
+    connection.execute.return_value.fetchone.return_value = (42,)
+    mock_get_connection.return_value.__enter__.return_value = connection
+
+    result = claim_notification_delivery(
+        7, "Customer@Example.com", "CLAIM_SUBMITTED"
+    )
+
+    assert result == 42
+    query, params = connection.execute.call_args.args
+    assert "ON CONFLICT" in query
+    assert "delivery_status = 'FAILED'" in query
+    assert "RETURNING notification_id" in query
+    assert params == (7, "customer@example.com", "CLAIM_SUBMITTED")
+
+
+@patch("services.notification_service.get_db_connection")
+def test_claim_notification_delivery_returns_none_when_not_claimable(
+    mock_get_connection,
+):
+    from services.notification_service import claim_notification_delivery
+
+    connection = MagicMock()
+    connection.execute.return_value.fetchone.return_value = None
+    mock_get_connection.return_value.__enter__.return_value = connection
+
+    result = claim_notification_delivery(
+        7, "customer@example.com", "CLAIM_SUBMITTED"
+    )
+
+    assert result is None
